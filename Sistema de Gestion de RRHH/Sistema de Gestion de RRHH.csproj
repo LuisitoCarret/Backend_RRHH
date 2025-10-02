@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Sistema_de_Gestion_de_RRHH</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="9.0.6" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.6" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Modulo.Asistencias.Application\Modulo.Asistencias.Application.csproj" />
+    <ProjectReference Include="..\Modulo.Asistencias.Infrastructure\Modulo.Asistencias.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modulo.Contratos.Application\Modulo.Contratos.Application.csproj" />
+    <ProjectReference Include="..\Modulo.Contratos.Infrastructure\Modulo.Contratos.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modulo.Empelados.Application\Modulo.Empelados.Application.csproj" />
+    <ProjectReference Include="..\Modulo.Empleados.Infrastructure\Modulo.Empleados.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modulo.Evaluaciones.Application\Modulo.Evaluaciones.Application.csproj" />
+    <ProjectReference Include="..\Modulo.Evaluaciones.Infrastructure\Modulo.Evaluaciones.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modulo.Reclutamiento.Application\Modulo.Reclutamiento.Application.csproj" />
+    <ProjectReference Include="..\Modulo.Reclutamiento.Infrastructure\Modulo.Reclutamiento.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
