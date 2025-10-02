@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Modulo_Asistencias</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\Services\" />
+    <Folder Include="Domain\Entities\" />
+    <Folder Include="Domain\Interfaces\Services\" />
+    <Folder Include="Domain\Interfaces\Repositories\" />
+    <Folder Include="Infrastructure\DataContexts\" />
+    <Folder Include="Infrastructure\Persistence\" />
+    <Folder Include="Presentation\Controllers\" />
+  </ItemGroup>
+
+</Project>
