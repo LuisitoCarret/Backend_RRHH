@@ -21,7 +21,7 @@ Esto permitirá mantener un código **organizado, escalable y mantenible**.
 
 ### 2.1 Árbol de solución (visual)
 
-![Estructura del proyecto](Sistema de Gestion de RRHH/docs/estructura.jpg)
+![Estructura del proyecto](docs/estructura.jpg)
 
 > Nota: se corrigió el typo en **Modulo.Empleados.Application**.  
 > Se muestran todos los módulos (Asistencias, Contratos, Empleados, Evaluaciones y Reclutamiento) con sus capas **Domain, Application e Infrastructure**, además del proyecto **Gateway** (`Sistema de Gestion de RRHH`).
