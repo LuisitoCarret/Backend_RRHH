@@ -50,3 +50,30 @@ Esto permitirá mantener un código **organizado, escalable y mantenible**.
 
 - Se recomienda renombrar el proyecto **Sistema de Gestion de RRHH** a `Gateway.Api` para mayor claridad y alineación con Clean Architecture.  
 - Mantener consistencia en nombres de módulos (ya corregido el typo en *Empleados*).  
+
+## 3) ¿Qué contiene cada proyecto/carpeta?
+
+**Gateway.Api (Web API / presentación)**  
+- `Controllers/` → Endpoints HTTP que delegan la lógica a *Application*.  
+- `Program.cs` → Configuración de DI (inyección de dependencias), Swagger, Auth/JWT, CORS y Logging.  
+
+**Infrastructure (infraestructura compartida o por módulo)**  
+- `DataContexts/` → `DbContext(s)` de EF Core y configuraciones.  
+- `Persistence/` → Repositorios concretos que implementan interfaces de *Domain/Application*, además de las *Migrations*.  
+
+**Modulo.X.Domain (negocio puro)**  
+- `Entities/` → Entidades con reglas e invariantes del dominio.  
+- `Interfaces/Repositories` → Contratos de acceso a datos (sin EF).  
+- `Interfaces/Services` → Servicios de dominio (si aplica).  
+
+**Modulo.X.Application (casos de uso)**  
+- `Services/` → Casos de uso / orquestación (Commands/Queries si se usa MediatR).  
+- `DTOs/` → Objetos de transferencia (Request/Response) hacia/desde la capa de presentación.  
+- `Validators/` → Validaciones a nivel de caso de uso (ejemplo: FluentValidation).  
+
+> Cada capa tiene una responsabilidad clara:  
+> - **Domain** define el *qué*.  
+> - **Application** define el *cómo*.  
+> - **Infrastructure** implementa los detalles técnicos.  
+> - **Gateway.Api** expone la API al mundo exterior.
+
