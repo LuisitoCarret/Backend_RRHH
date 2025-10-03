@@ -1,0 +1,430 @@
+Listado de rutas de carpetas para el volumen Windows
+El número de serie del volumen es 6336-69D0
+C:.
+¦   .gitattributes
+¦   .gitignore
+¦   estructura.txt
+¦   Sistema de Gestion de RRHH.sln
+¦   
++---.github
+¦   +---workflows
++---Modulo.Asistencias.Application
+¦   ¦   Class1.cs
+¦   ¦   Modulo.Asistencias.Application.csproj
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   +---obj
+¦       ¦   Modulo.Asistencias.Application.csproj.nuget.dgspec.json
+¦       ¦   Modulo.Asistencias.Application.csproj.nuget.g.props
+¦       ¦   Modulo.Asistencias.Application.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   Modulo.Asistencias.Application.AssemblyInfo.cs
+¦               ¦   Modulo.Asistencias.Application.AssemblyInfoInputs.cache
+¦               ¦   Modulo.Asistencias.Application.assets.cache
+¦               ¦   Modulo.Asistencias.Application.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   Modulo.Asistencias.Application.GlobalUsings.g.cs
+¦               ¦   
+¦               +---ref
+¦               +---refint
++---Modulo.Asistencias.Domain
+¦   ¦   Class1.cs
+¦   ¦   Modulo.Asistencias.Domain.csproj
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   +---obj
+¦       ¦   Modulo.Asistencias.Domain.csproj.nuget.dgspec.json
+¦       ¦   Modulo.Asistencias.Domain.csproj.nuget.g.props
+¦       ¦   Modulo.Asistencias.Domain.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   Modulo.Asistencias.Domain.AssemblyInfo.cs
+¦               ¦   Modulo.Asistencias.Domain.AssemblyInfoInputs.cache
+¦               ¦   Modulo.Asistencias.Domain.assets.cache
+¦               ¦   Modulo.Asistencias.Domain.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   Modulo.Asistencias.Domain.GlobalUsings.g.cs
+¦               ¦   
+¦               +---ref
+¦               +---refint
++---Modulo.Asistencias.Infrastructure
+¦   ¦   Class1.cs
+¦   ¦   Modulo.Asistencias.Infrastructure.csproj
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   +---obj
+¦       ¦   Modulo.Asistencias.Infrastructure.csproj.nuget.dgspec.json
+¦       ¦   Modulo.Asistencias.Infrastructure.csproj.nuget.g.props
+¦       ¦   Modulo.Asistencias.Infrastructure.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   Modulo.Asistencias.Infrastructure.AssemblyInfo.cs
+¦               ¦   Modulo.Asistencias.Infrastructure.AssemblyInfoInputs.cache
+¦               ¦   Modulo.Asistencias.Infrastructure.assets.cache
+¦               ¦   Modulo.Asistencias.Infrastructure.csproj.AssemblyReference.cache
+¦               ¦   Modulo.Asistencias.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   Modulo.Asistencias.Infrastructure.GlobalUsings.g.cs
+¦               ¦   
+¦               +---ref
+¦               +---refint
++---Modulo.Contratos.Application
+¦   ¦   Class1.cs
+¦   ¦   Modulo.Contratos.Application.csproj
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   +---obj
+¦       ¦   Modulo.Contratos.Application.csproj.nuget.dgspec.json
+¦       ¦   Modulo.Contratos.Application.csproj.nuget.g.props
+¦       ¦   Modulo.Contratos.Application.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   Modulo.Contratos.Application.AssemblyInfo.cs
+¦               ¦   Modulo.Contratos.Application.AssemblyInfoInputs.cache
+¦               ¦   Modulo.Contratos.Application.assets.cache
+¦               ¦   Modulo.Contratos.Application.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   Modulo.Contratos.Application.GlobalUsings.g.cs
+¦               ¦   
+¦               +---ref
+¦               +---refint
++---Modulo.Contratos.Domain
+¦   ¦   Class1.cs
+¦   ¦   Modulo.Contratos.Domain.csproj
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   +---obj
+¦       ¦   Modulo.Contratos.Domain.csproj.nuget.dgspec.json
+¦       ¦   Modulo.Contratos.Domain.csproj.nuget.g.props
+¦       ¦   Modulo.Contratos.Domain.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   Modulo.Contratos.Domain.AssemblyInfo.cs
+¦               ¦   Modulo.Contratos.Domain.AssemblyInfoInputs.cache
+¦               ¦   Modulo.Contratos.Domain.assets.cache
+¦               ¦   Modulo.Contratos.Domain.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   Modulo.Contratos.Domain.GlobalUsings.g.cs
+¦               ¦   
+¦               +---ref
+¦               +---refint
++---Modulo.Contratos.Infrastructure
+¦   ¦   Class1.cs
+¦   ¦   Modulo.Contratos.Infrastructure.csproj
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   +---obj
+¦       ¦   Modulo.Contratos.Infrastructure.csproj.nuget.dgspec.json
+¦       ¦   Modulo.Contratos.Infrastructure.csproj.nuget.g.props
+¦       ¦   Modulo.Contratos.Infrastructure.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   Modulo.Contratos.Infrastructure.AssemblyInfo.cs
+¦               ¦   Modulo.Contratos.Infrastructure.AssemblyInfoInputs.cache
+¦               ¦   Modulo.Contratos.Infrastructure.assets.cache
+¦               ¦   Modulo.Contratos.Infrastructure.csproj.AssemblyReference.cache
+¦               ¦   Modulo.Contratos.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   Modulo.Contratos.Infrastructure.GlobalUsings.g.cs
+¦               ¦   
+¦               +---ref
+¦               +---refint
++---Modulo.Empelados.Application
+¦   ¦   Class1.cs
+¦   ¦   Modulo.Empelados.Application.csproj
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   +---obj
+¦       ¦   Modulo.Empelados.Application.csproj.nuget.dgspec.json
+¦       ¦   Modulo.Empelados.Application.csproj.nuget.g.props
+¦       ¦   Modulo.Empelados.Application.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   Modulo.Empelados.Application.AssemblyInfo.cs
+¦               ¦   Modulo.Empelados.Application.AssemblyInfoInputs.cache
+¦               ¦   Modulo.Empelados.Application.assets.cache
+¦               ¦   Modulo.Empelados.Application.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   Modulo.Empelados.Application.GlobalUsings.g.cs
+¦               ¦   
+¦               +---ref
+¦               +---refint
++---Modulo.Empleados.Domain
+¦   ¦   Class1.cs
+¦   ¦   Modulo.Empleados.Domain.csproj
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   +---obj
+¦       ¦   Modulo.Empleados.Domain.csproj.nuget.dgspec.json
+¦       ¦   Modulo.Empleados.Domain.csproj.nuget.g.props
+¦       ¦   Modulo.Empleados.Domain.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   Modulo.Empleados.Domain.AssemblyInfo.cs
+¦               ¦   Modulo.Empleados.Domain.AssemblyInfoInputs.cache
+¦               ¦   Modulo.Empleados.Domain.assets.cache
+¦               ¦   Modulo.Empleados.Domain.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   Modulo.Empleados.Domain.GlobalUsings.g.cs
+¦               ¦   
+¦               +---ref
+¦               +---refint
++---Modulo.Empleados.Infrastructure
+¦   ¦   Class1.cs
+¦   ¦   Modulo.Empleados.Infrastructure.csproj
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   +---obj
+¦       ¦   Modulo.Empleados.Infrastructure.csproj.nuget.dgspec.json
+¦       ¦   Modulo.Empleados.Infrastructure.csproj.nuget.g.props
+¦       ¦   Modulo.Empleados.Infrastructure.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   Modulo.Empleados.Infrastructure.AssemblyInfo.cs
+¦               ¦   Modulo.Empleados.Infrastructure.AssemblyInfoInputs.cache
+¦               ¦   Modulo.Empleados.Infrastructure.assets.cache
+¦               ¦   Modulo.Empleados.Infrastructure.csproj.AssemblyReference.cache
+¦               ¦   Modulo.Empleados.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   Modulo.Empleados.Infrastructure.GlobalUsings.g.cs
+¦               ¦   
+¦               +---ref
+¦               +---refint
++---Modulo.Evaluaciones.Application
+¦   ¦   Class1.cs
+¦   ¦   Modulo.Evaluaciones.Application.csproj
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   +---obj
+¦       ¦   Modulo.Evaluaciones.Application.csproj.nuget.dgspec.json
+¦       ¦   Modulo.Evaluaciones.Application.csproj.nuget.g.props
+¦       ¦   Modulo.Evaluaciones.Application.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   Modulo.Evaluaciones.Application.AssemblyInfo.cs
+¦               ¦   Modulo.Evaluaciones.Application.AssemblyInfoInputs.cache
+¦               ¦   Modulo.Evaluaciones.Application.assets.cache
+¦               ¦   Modulo.Evaluaciones.Application.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   Modulo.Evaluaciones.Application.GlobalUsings.g.cs
+¦               ¦   
+¦               +---ref
+¦               +---refint
++---Modulo.Evaluaciones.Domain
+¦   ¦   Class1.cs
+¦   ¦   Modulo.Evaluaciones.Domain.csproj
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   +---obj
+¦       ¦   Modulo.Evaluaciones.Domain.csproj.nuget.dgspec.json
+¦       ¦   Modulo.Evaluaciones.Domain.csproj.nuget.g.props
+¦       ¦   Modulo.Evaluaciones.Domain.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   Modulo.Evaluaciones.Domain.AssemblyInfo.cs
+¦               ¦   Modulo.Evaluaciones.Domain.AssemblyInfoInputs.cache
+¦               ¦   Modulo.Evaluaciones.Domain.assets.cache
+¦               ¦   Modulo.Evaluaciones.Domain.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   Modulo.Evaluaciones.Domain.GlobalUsings.g.cs
+¦               ¦   
+¦               +---ref
+¦               +---refint
++---Modulo.Evaluaciones.Infrastructure
+¦   ¦   Class1.cs
+¦   ¦   Modulo.Evaluaciones.Infrastructure.csproj
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   +---obj
+¦       ¦   Modulo.Evaluaciones.Infrastructure.csproj.nuget.dgspec.json
+¦       ¦   Modulo.Evaluaciones.Infrastructure.csproj.nuget.g.props
+¦       ¦   Modulo.Evaluaciones.Infrastructure.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   Modulo.Evaluaciones.Infrastructure.AssemblyInfo.cs
+¦               ¦   Modulo.Evaluaciones.Infrastructure.AssemblyInfoInputs.cache
+¦               ¦   Modulo.Evaluaciones.Infrastructure.assets.cache
+¦               ¦   Modulo.Evaluaciones.Infrastructure.csproj.AssemblyReference.cache
+¦               ¦   Modulo.Evaluaciones.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   Modulo.Evaluaciones.Infrastructure.GlobalUsings.g.cs
+¦               ¦   
+¦               +---ref
+¦               +---refint
++---Modulo.Reclutamiento.Application
+¦   ¦   Class1.cs
+¦   ¦   Modulo.Reclutamiento.Application.csproj
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   +---obj
+¦       ¦   Modulo.Reclutamiento.Application.csproj.nuget.dgspec.json
+¦       ¦   Modulo.Reclutamiento.Application.csproj.nuget.g.props
+¦       ¦   Modulo.Reclutamiento.Application.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   Modulo.Reclutamiento.Application.AssemblyInfo.cs
+¦               ¦   Modulo.Reclutamiento.Application.AssemblyInfoInputs.cache
+¦               ¦   Modulo.Reclutamiento.Application.assets.cache
+¦               ¦   Modulo.Reclutamiento.Application.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   Modulo.Reclutamiento.Application.GlobalUsings.g.cs
+¦               ¦   
+¦               +---ref
+¦               +---refint
++---Modulo.Reclutamiento.Domain
+¦   ¦   Class1.cs
+¦   ¦   Modulo.Reclutamiento.Domain.csproj
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   +---obj
+¦       ¦   Modulo.Reclutamiento.Domain.csproj.nuget.dgspec.json
+¦       ¦   Modulo.Reclutamiento.Domain.csproj.nuget.g.props
+¦       ¦   Modulo.Reclutamiento.Domain.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   Modulo.Reclutamiento.Domain.AssemblyInfo.cs
+¦               ¦   Modulo.Reclutamiento.Domain.AssemblyInfoInputs.cache
+¦               ¦   Modulo.Reclutamiento.Domain.assets.cache
+¦               ¦   Modulo.Reclutamiento.Domain.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   Modulo.Reclutamiento.Domain.GlobalUsings.g.cs
+¦               ¦   
+¦               +---ref
+¦               +---refint
++---Modulo.Reclutamiento.Infrastructure
+¦   ¦   Class1.cs
+¦   ¦   Modulo.Reclutamiento.Infrastructure.csproj
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   +---obj
+¦       ¦   Modulo.Reclutamiento.Infrastructure.csproj.nuget.dgspec.json
+¦       ¦   Modulo.Reclutamiento.Infrastructure.csproj.nuget.g.props
+¦       ¦   Modulo.Reclutamiento.Infrastructure.csproj.nuget.g.targets
+¦       ¦   project.assets.json
+¦       ¦   project.nuget.cache
+¦       ¦   
+¦       +---Debug
+¦           +---net8.0
+¦               ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦               ¦   Modulo.Reclutamiento.Infrastructure.AssemblyInfo.cs
+¦               ¦   Modulo.Reclutamiento.Infrastructure.AssemblyInfoInputs.cache
+¦               ¦   Modulo.Reclutamiento.Infrastructure.assets.cache
+¦               ¦   Modulo.Reclutamiento.Infrastructure.csproj.AssemblyReference.cache
+¦               ¦   Modulo.Reclutamiento.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+¦               ¦   Modulo.Reclutamiento.Infrastructure.GlobalUsings.g.cs
+¦               ¦   
+¦               +---ref
+¦               +---refint
++---Sistema de Gestion de RRHH
+    ¦   appsettings.Development.json
+    ¦   appsettings.json
+    ¦   Program.cs
+    ¦   Sistema de Gestion de RRHH.csproj
+    ¦   Sistema de Gestion de RRHH.csproj.user
+    ¦   Sistema de Gestion de RRHH.http
+    ¦   WeatherForecast.cs
+    ¦   
+    +---bin
+    ¦   +---Debug
+    ¦       +---net8.0
+    +---Controllers
+    ¦       WeatherForecastController.cs
+    ¦       
+    +---obj
+    ¦   ¦   project.assets.json
+    ¦   ¦   project.nuget.cache
+    ¦   ¦   Sistema de Gestion de RRHH.csproj.nuget.dgspec.json
+    ¦   ¦   Sistema de Gestion de RRHH.csproj.nuget.g.props
+    ¦   ¦   Sistema de Gestion de RRHH.csproj.nuget.g.targets
+    ¦   ¦   
+    ¦   +---Debug
+    ¦       +---net8.0
+    ¦           ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+    ¦           ¦   rpswa.dswa.cache.json
+    ¦           ¦   Sistema de Gestion de RRHH.AssemblyInfo.cs
+    ¦           ¦   Sistema de Gestion de RRHH.AssemblyInfoInputs.cache
+    ¦           ¦   Sistema de Gestion de RRHH.assets.cache
+    ¦           ¦   Sistema de Gestion de RRHH.csproj.AssemblyReference.cache
+    ¦           ¦   Sistema de Gestion de RRHH.GeneratedMSBuildEditorConfig.editorconfig
+    ¦           ¦   Sistema de Gestion de RRHH.GlobalUsings.g.cs
+    ¦           ¦   staticwebassets.removed.txt
+    ¦           ¦   
+    ¦           +---ref
+    ¦           +---refint
+    ¦           +---staticwebassets
+    +---Properties
+            launchSettings.json
+            
