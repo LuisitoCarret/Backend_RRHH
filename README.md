@@ -25,9 +25,9 @@ Esto permitirá mantener un código **organizado, escalable y mantenible**.
 > Nota: se corrigió el typo en **Modulo.Empleados.Application**.  
 > Se muestran todos los módulos (Asistencias, Contratos, Empleados, Evaluaciones y Reclutamiento) con sus capas **Domain, Application e Infrastructure**, además del proyecto **Gateway** (`Sistema de Gestion de RRHH`).
 
-### 2.2 ¿Qué contiene cada proyecto/carpeta?
+### 2.2 ¿Qué contiene Clean Architecture?
 
-**Gateway (Sistema de Gestion de RRHH / Web API)**  
+**Gateway (Presentacion / Web API)**  
 - `Controllers/` → Endpoints HTTP; delegan a la capa Application.  
 - `Program.cs` → configuración de inyección de dependencias (DI), Swagger, autenticación, CORS y logging.  
 - `appsettings*.json` → configuración por entorno.  
@@ -53,17 +53,17 @@ Esto permitirá mantener un código **organizado, escalable y mantenible**.
 
 ## 3) ¿Qué contiene cada proyecto/carpeta?
 
-**Gateway.Api (Web API / presentación)**
+**Gateway.Api (Web API / Presentación)**
 - `Controllers/` → Endpoints HTTP; delegan a *Application*.
 - `Program.cs` → DI (inyección de dependencias), Swagger, Auth/JWT, CORS, Logging.
 
 **Modulo.X.Domain (negocio puro)**
-- `Entities/` → Entidades ricas con reglas/invariantes del dominio.
+- `Entities/` → Clases que representan los objetos principales del negocio.
 - `Interfaces/Repositories` → Contratos de acceso a datos (sin EF).
 - `Interfaces/Services` → Servicios de dominio (si aplica).
 
 **Modulo.X.Application (casos de uso)**
-- `Services/` → Casos de uso / orquestación (Commands/Queries si usas MediatR).
+- `Services/` → Aquí van las clases que contienen la lógica para ejecutar acciones del sistema.
 - `DTOs/` → Request/Response hacia/desde la capa de presentación.
 - `Validators/` → Validaciones (FluentValidation) a nivel de caso de uso.
 
@@ -81,9 +81,45 @@ Esto permitirá mantener un código **organizado, escalable y mantenible**.
 > `Gateway.Api → Application → Domain`
 > y `Infrastructure` implementa contratos definidos en Domain/Application.
 
-> Cada capa tiene una responsabilidad clara:  
-> - **Domain** define el *qué*.  
-> - **Application** define el *cómo*.  
-> - **Infrastructure** implementa los detalles técnicos.  
-> - **Gateway.Api** expone la API al mundo exterior.
+## 4) Ramas de Git (flujo y uso)
 
+### 4.1 Ramas principales
+
+- *main*  
+  - Rama de *producción*.  
+  - Solo recibe merges desde release o hotfix.  
+
+- *develop*  
+  - Rama de *integración general*.  
+  - Base donde se integran los sprints.  
+  - Nunca se hace commit directo (solo Pull Request).  
+
+### 4.2 Ramas de trabajo
+
+- *sprint1, sprint2, ...*  
+  - Ramas de cada *sprint*.  
+  - Se crean a partir de develop.  
+  - Sirven como base para las ramas personales de cada integrante.  
+
+- *sprint1_integranteX*  
+  - Ramas personales o por módulo dentro de un sprint.  
+  - Se mergean hacia la rama del sprint correspondiente.  
+
+- *feature/nombre-corto* (opcional)  
+  - Ramas específicas por funcionalidad.  
+  - Se integran a develop o al sprint activo.  
+
+- *release/x.y.z*  
+  - Rama de *estabilización/QA* antes de pasar a producción.  
+  - Una vez mergeada a main y develop, se elimina.  
+
+- *hotfix/fix-descriptivo*  
+  - Ramas para *parches urgentes* desde producción (main).  
+  - Se mergean tanto a main como a develop para no perder cambios.  
+
+### 4.3 Reglas de flujo
+
+- No se permiten commits directos en main ni en develop.  
+- Todo cambio debe entrar por *Pull Request* y revisión.  
+- Borrar ramas temporales (sprint, feature, release, hotfix) después del merge.  
+- Mantener ramas actualizadas con git pull --rebase o con “Update branch” en el PR.
