@@ -161,3 +161,48 @@ El proyecto fue creado utilizando *Visual Studio 2022* con la siguiente secuenci
 5. *Configuración inicial*  
    - Se creó automáticamente Program.cs con configuración base (Swagger, controladores).  
    - En cada módulo se generó inicialmente un archivo placeholder Class1.cs que servirá como punto de inicio para definir Entities, DTOs, Services, etc.
+
+
+
+## 6) Dependencias instaladas (y para qué)
+
+### 6.1 Gateway / Web API – `Sistema de Gestion de RRHH.csproj`
+- `Swashbuckle.AspNetCore` **6.6.2**
+- `Swashbuckle.AspNetCore.Swagger` **9.0.6**
+- `Swashbuckle.AspNetCore.SwaggerGen` **9.0.6**
+- `Swashbuckle.AspNetCore.SwaggerUI` **9.0.6**
+
+**Para qué sirven:** Habilitan **OpenAPI/Swagger** para documentar y probar la API (UI interactiva, esquema JSON, generadores).
+
+> **Recomendación:** unificar versiones de Swashbuckle (mantener el mismo `major.minor` en todos) para evitar incompatibilidades.
+
+---
+
+### 6.2 Infraestructura por módulo – `Modulo.X.Infrastructure.csproj`
+- `Microsoft.EntityFrameworkCore` **9.0.9**
+- `Microsoft.EntityFrameworkCore.Design` **9.0.9** *(solo en diseño/migrations)*
+- `Microsoft.EntityFrameworkCore.SqlServer` **9.0.9**
+- `Microsoft.EntityFrameworkCore.Tools` **9.0.9** *(CLI/migrations)*
+
+**Para qué sirven:** Implementar la **persistencia** con EF Core, proveedor **SQL Server**, y ejecutar **migraciones** y comandos de diseño.
+
+---
+
+### 6.3 Application y Domain – `Modulo.X.Application/Domain.csproj`
+- **Sin paquetes adicionales** por ahora (plantillas base .NET 8).
+
+**Para qué sirven:**  
+- *Domain*: entidades y contratos del dominio.  
+- *Application*: casos de uso, DTOs y validaciones.
+
+---
+
+### 6.4 Dependencias previstas (pendiente de agregar, sugerido)
+- `FluentValidation` (validaciones en Application)  
+- `MediatR` (si aplicas patrón CQRS para Commands/Queries)  
+- `AutoMapper` (mapeo entre Entities y DTOs)  
+- `Serilog` (logging estructurado)  
+- `Microsoft.AspNetCore.Authentication.JwtBearer` (Auth/JWT en Gateway)
+
+> Estas se agregan conforme avances en lógica de negocio, endpoints y seguridad.
+
