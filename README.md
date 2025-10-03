@@ -53,23 +53,33 @@ Esto permitirá mantener un código **organizado, escalable y mantenible**.
 
 ## 3) ¿Qué contiene cada proyecto/carpeta?
 
-**Gateway.Api (Web API / presentación)**  
-- `Controllers/` → Endpoints HTTP que delegan la lógica a *Application*.  
-- `Program.cs` → Configuración de DI (inyección de dependencias), Swagger, Auth/JWT, CORS y Logging.  
+**Gateway.Api (Web API / presentación)**
+- `Controllers/` → Endpoints HTTP; delegan a *Application*.
+- `Program.cs` → DI (inyección de dependencias), Swagger, Auth/JWT, CORS, Logging.
 
-**Infrastructure (infraestructura compartida o por módulo)**  
-- `DataContexts/` → `DbContext(s)` de EF Core y configuraciones.  
-- `Persistence/` → Repositorios concretos que implementan interfaces de *Domain/Application*, además de las *Migrations*.  
+**Modulo.X.Domain (negocio puro)**
+- `Entities/` → Entidades ricas con reglas/invariantes del dominio.
+- `Interfaces/Repositories` → Contratos de acceso a datos (sin EF).
+- `Interfaces/Services` → Servicios de dominio (si aplica).
 
-**Modulo.X.Domain (negocio puro)**  
-- `Entities/` → Entidades con reglas e invariantes del dominio.  
-- `Interfaces/Repositories` → Contratos de acceso a datos (sin EF).  
-- `Interfaces/Services` → Servicios de dominio (si aplica).  
+**Modulo.X.Application (casos de uso)**
+- `Services/` → Casos de uso / orquestación (Commands/Queries si usas MediatR).
+- `DTOs/` → Request/Response hacia/desde la capa de presentación.
+- `Validators/` → Validaciones (FluentValidation) a nivel de caso de uso.
 
-**Modulo.X.Application (casos de uso)**  
-- `Services/` → Casos de uso / orquestación (Commands/Queries si se usa MediatR).  
-- `DTOs/` → Objetos de transferencia (Request/Response) hacia/desde la capa de presentación.  
-- `Validators/` → Validaciones a nivel de caso de uso (ejemplo: FluentValidation).  
+**Modulo.X.Infrastructure (infraestructura por módulo)**
+- `DataContexts/` → `DbContext(s)` EF Core y configuraciones.
+- `Persistence/` → Repositorios concretos (implementan contratos de Domain/Application) y `Migrations/`.
+
+> Resumen de responsabilidades:
+> - **Domain**: el *qué* (reglas de negocio).
+> - **Application**: el *cómo* (casos de uso).
+> - **Infrastructure**: detalles técnicos por módulo (persistencia, EF Core).
+> - **Gateway.Api**: expone la API y configura el host.
+
+> Dependencias (dirección):
+> `Gateway.Api → Application → Domain`
+> y `Infrastructure` implementa contratos definidos en Domain/Application.
 
 > Cada capa tiene una responsabilidad clara:  
 > - **Domain** define el *qué*.  
