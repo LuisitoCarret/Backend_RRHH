@@ -123,3 +123,41 @@ Esto permitirá mantener un código **organizado, escalable y mantenible**.
 - Todo cambio debe entrar por *Pull Request* y revisión.  
 - Borrar ramas temporales (sprint, feature, release, hotfix) después del merge.  
 - Mantener ramas actualizadas con git pull --rebase o con “Update branch” en el PR.
+
+## 5) Cómo se creó el Proyecto (Pasos reproducibles)
+
+El proyecto fue creado utilizando *Visual Studio 2022* con la siguiente secuencia de pasos:
+
+1. *Creación de la solución*  
+   - Abrir *Visual Studio 2022* → Crear un nuevo proyecto.  
+   - Seleccionar *Solución en blanco*.  
+   - Asignar nombre: Sistema de Gestion de RRHH.  
+
+2. *Creación del Gateway (Web API)*  
+   - Dentro de la solución, agregar un nuevo proyecto de tipo *ASP.NET Core Web API*.  
+   - Nombre del proyecto: Sistema de Gestion de RRHH.  
+   - Seleccionar versión de framework: *.NET 8.0*.  
+   - Activar la casilla de *Swagger/OpenAPI*.  
+
+3. *Creación de módulos y capas (por cada módulo)*  
+   Para cada módulo (ejemplo: *Empleados*):  
+   - Agregar un *Proyecto de Biblioteca de Clases (.NET Class Library)* con los nombres:  
+     - Modulo.Empleados.Domain  
+     - Modulo.Empleados.Application  
+     - Modulo.Empleados.Infrastructure  
+   - Repetir este procedimiento para:  
+     - Modulo.Asistencias.*  
+     - Modulo.Contratos.*  
+     - Modulo.Reclutamiento.*  
+     - Modulo.Evaluaciones.*  
+
+4. *Referencias entre proyectos*
+   - Desde la interfaz de Visual Studio → *Agregar referencia*:  
+     - `Application` → referencia a `Domain`.  
+     - `Infrastructure` → referencia a `Application` y `Domain`.  
+     - `Gateway (Web API)` → referencia a `Application` y `Infrastructure`.  
+ 
+
+5. *Configuración inicial*  
+   - Se creó automáticamente Program.cs con configuración base (Swagger, controladores).  
+   - En cada módulo se generó inicialmente un archivo placeholder Class1.cs que servirá como punto de inicio para definir Entities, DTOs, Services, etc.
