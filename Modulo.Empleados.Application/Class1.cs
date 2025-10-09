@@ -1,4 +1,4 @@
-﻿namespace Modulo.Empelados.Application
+﻿namespace Modulo.Empleados.Application
 {
     public class Class1
     {
