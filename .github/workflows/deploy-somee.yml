@@ -1,0 +1,50 @@
+name: Deploy to Somee via FTP (develop)
+
+on:
+  push:
+    branches:
+      - develop
+  # Puedes lanzar manualmente si lo necesitas:
+  # workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+    env:
+      DOTNET_VERSION: '9.0.x'
+      PROJECT_PATH: 'Sistema de Gestion de RRHH\Api.Gateway.csproj'
+      OUTPUT_DIR: './publish'
+      RUNTIME_ID: 'win-x86' # usa win-x64 si tu hosting es 64 bits
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore "${{ env.PROJECT_PATH }}"
+
+      - name: Build
+        run: dotnet build "${{ env.PROJECT_PATH }}" -c Release --no-restore
+
+      - name: Publish (self-contained, single-file)
+        run: dotnet publish "${{ env.PROJECT_PATH }}" -c Release -r ${{ env.RUNTIME_ID }} --self-contained true -p:PublishSingleFile=true -o "${{ env.OUTPUT_DIR }}"
+
+      - name: List published files
+        run: dir ${{ env.OUTPUT_DIR }}
+        shell: pwsh
+
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ${{ env.OUTPUT_DIR }}
+          server-dir: ${{ secrets.FTP_TARGET_DIR }}
+          protocol: ftps
+          dangerous-clean-slate: true
