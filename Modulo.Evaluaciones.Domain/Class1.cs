@@ -1,4 +1,4 @@
-﻿namespace Modulo_Reclutamiento
+﻿namespace Modulo.Evaluaciones.Domain
 {
     public class Class1
     {

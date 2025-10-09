@@ -1,4 +1,4 @@
-﻿namespace Modulo_Contratos
+﻿namespace Modulo.Contratos.Domain
 {
     public class Class1
     {

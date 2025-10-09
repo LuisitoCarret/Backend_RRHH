@@ -1,6 +1,0 @@
-@Sistema_de_Gestion_de_RRHH_HostAddress = http://localhost:5199
-
-GET {{Sistema_de_Gestion_de_RRHH_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

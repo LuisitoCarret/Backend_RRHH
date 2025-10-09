@@ -1,4 +1,4 @@
-﻿namespace Modulo_Empleados
+﻿namespace Modulo.Asistencias.Domain
 {
     public class Class1
     {
