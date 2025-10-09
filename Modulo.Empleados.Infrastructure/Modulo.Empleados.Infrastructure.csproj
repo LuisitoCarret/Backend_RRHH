@@ -19,4 +19,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Modulo.Empelados.Application\Modulo.Empleados.Application.csproj" />
+    <ProjectReference Include="..\Modulo.Empleados.Domain\Modulo.Empleados.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

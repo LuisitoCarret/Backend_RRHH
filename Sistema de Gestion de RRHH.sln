@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36408.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Gateway", "Sistema de Gestion de RRHH\Api.Gateway.csproj", "{A53D5A97-FA59-4832-85AB-C8565C2EB483}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Gateway", "Sistema de Gestion de RRHH\Api.Gateway.csproj", "{67DBB4C2-BF96-4811-84C7-B911E8FA05FC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modulo.Empleados", "Modulo.Empleados", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
@@ -51,10 +51,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A53D5A97-FA59-4832-85AB-C8565C2EB483}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A53D5A97-FA59-4832-85AB-C8565C2EB483}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A53D5A97-FA59-4832-85AB-C8565C2EB483}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A53D5A97-FA59-4832-85AB-C8565C2EB483}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67DBB4C2-BF96-4811-84C7-B911E8FA05FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67DBB4C2-BF96-4811-84C7-B911E8FA05FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67DBB4C2-BF96-4811-84C7-B911E8FA05FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67DBB4C2-BF96-4811-84C7-B911E8FA05FC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{96256543-3D6A-4AED-B997-75CA4C437886}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{96256543-3D6A-4AED-B997-75CA4C437886}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96256543-3D6A-4AED-B997-75CA4C437886}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -19,4 +19,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Modulo.Reclutamiento.Application\Modulo.Reclutamiento.Application.csproj" />
+    <ProjectReference Include="..\Modulo.Reclutamiento.Domain\Modulo.Reclutamiento.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

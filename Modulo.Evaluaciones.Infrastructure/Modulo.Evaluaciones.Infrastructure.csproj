@@ -19,4 +19,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Modulo.Evaluaciones.Application\Modulo.Evaluaciones.Application.csproj" />
+    <ProjectReference Include="..\Modulo.Evaluaciones.Domain\Modulo.Evaluaciones.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

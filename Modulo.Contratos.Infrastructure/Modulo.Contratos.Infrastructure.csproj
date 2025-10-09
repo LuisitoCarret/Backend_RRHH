@@ -19,4 +19,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Modulo.Contratos.Application\Modulo.Contratos.Application.csproj" />
+    <ProjectReference Include="..\Modulo.Contratos.Domain\Modulo.Contratos.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

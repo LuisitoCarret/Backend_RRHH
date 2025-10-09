@@ -19,4 +19,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Modulo.Asistencias.Application\Modulo.Asistencias.Application.csproj" />
+    <ProjectReference Include="..\Modulo.Asistencias.Domain\Modulo.Asistencias.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
