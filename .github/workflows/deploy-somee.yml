@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - develop
-  # Puedes lanzar manualmente si lo necesitas:
-  # workflow_dispatch:
+  # Puedes ejecutar manualmente si lo necesitas:
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -14,7 +14,7 @@ jobs:
       DOTNET_VERSION: '9.0.x'
       PROJECT_PATH: 'Sistema de Gestion de RRHH\Api.Gateway.csproj'
       OUTPUT_DIR: './publish'
-      RUNTIME_ID: 'win-x86' # usa win-x64 si tu hosting es 64 bits
+      RUNTIME_ID: 'win-x86'
 
     steps:
       - name: Checkout
@@ -38,13 +38,14 @@ jobs:
         run: dir ${{ env.OUTPUT_DIR }}
         shell: pwsh
 
+      # 🔹 Despliegue directo a Somee (sin secrets)
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
+          server: RHPlus.somee.com          # 👈 Host directo sin ftp://
+          username: cidcid919310            # 👈 Tu usuario
+          password: Cid919310$              # 👈 Tu contraseña
           local-dir: ${{ env.OUTPUT_DIR }}/
-          server-dir: ${{ secrets.FTP_TARGET_DIR }}
-          protocol: ftp
+          server-dir: /www.RHPlus.somee.com/  # 👈 Carpeta remota
+          protocol: ftp                     # 👈 Usa ftp si FTPS da error
           dangerous-clean-slate: true
