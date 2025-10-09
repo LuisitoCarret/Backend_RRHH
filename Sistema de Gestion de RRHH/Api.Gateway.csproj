@@ -19,7 +19,7 @@
     <ProjectReference Include="..\Modulo.Asistencias.Infrastructure\Modulo.Asistencias.Infrastructure.csproj" />
     <ProjectReference Include="..\Modulo.Contratos.Application\Modulo.Contratos.Application.csproj" />
     <ProjectReference Include="..\Modulo.Contratos.Infrastructure\Modulo.Contratos.Infrastructure.csproj" />
-    <ProjectReference Include="..\Modulo.Empelados.Application\Modulo.Empleados.Application.csproj" />
+    <ProjectReference Include="..\Modulo.Empleados.Application\Modulo.Empleados.Application.csproj" />
     <ProjectReference Include="..\Modulo.Empleados.Infrastructure\Modulo.Empleados.Infrastructure.csproj" />
     <ProjectReference Include="..\Modulo.Evaluaciones.Application\Modulo.Evaluaciones.Application.csproj" />
     <ProjectReference Include="..\Modulo.Evaluaciones.Infrastructure\Modulo.Evaluaciones.Infrastructure.csproj" />
