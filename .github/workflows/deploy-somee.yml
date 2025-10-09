@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - develop
-  # Puedes ejecutar manualmente si lo necesitas:
   workflow_dispatch:
 
 jobs:
@@ -14,7 +13,7 @@ jobs:
       DOTNET_VERSION: '9.0.x'
       PROJECT_PATH: 'Sistema de Gestion de RRHH\Api.Gateway.csproj'
       OUTPUT_DIR: './publish'
-      RUNTIME_ID: 'win-x86'
+      RUNTIME_ID: 'win-x86'   # Somee suele correr 32-bit; si tu plan es 64-bit prueba 'win-x64'
 
     steps:
       - name: Checkout
@@ -31,21 +30,22 @@ jobs:
       - name: Build
         run: dotnet build "${{ env.PROJECT_PATH }}" -c Release --no-restore
 
-      - name: Publish (self-contained, single-file)
-        run: dotnet publish "${{ env.PROJECT_PATH }}" -c Release -r ${{ env.RUNTIME_ID }} --self-contained true -p:PublishSingleFile=true -o "${{ env.OUTPUT_DIR }}"
+      # ❌ Quitar single-file | ✅ Self-contained tradicional
+      - name: Publish (self-contained, NO single-file)
+        run: dotnet publish "${{ env.PROJECT_PATH }}" -c Release -r ${{ env.RUNTIME_ID }} --self-contained true -o "${{ env.OUTPUT_DIR }}"
 
-      - name: List published files
-        run: dir ${{ env.OUTPUT_DIR }}
+      - name: List published files (tree)
         shell: pwsh
+        run: |
+          Get-ChildItem -Recurse "${{ env.OUTPUT_DIR }}" | Select-Object FullName
 
-      # 🔹 Despliegue directo a Somee (sin secrets)
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
-          server: RHPlus.somee.com          # 👈 Host directo sin ftp://
-          username: cidcid919310            # 👈 Tu usuario
-          password: Cid919310$              # 👈 Tu contraseña
+          server: RHPlus.somee.com
+          username: cidcid919310
+          password: Cid919310$
           local-dir: ${{ env.OUTPUT_DIR }}/
-          server-dir: /www.RHPlus.somee.com/  # 👈 Carpeta remota
-          protocol: ftp                     # 👈 Usa ftp si FTPS da error
+          server-dir: /www.RHPlus.somee.com/
+          protocol: ftp
           dangerous-clean-slate: true
