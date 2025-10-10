@@ -102,7 +102,7 @@ jobs:
       - name: Smoke test /prueba
         shell: pwsh
         run: |
-          $url = "https://rhplus.somee.com/prueba"
+          $url = "http://rhplus.somee.com/prueba"
           $ok = $false
           for ($i=1; $i -le 10; $i++) {
             try {
