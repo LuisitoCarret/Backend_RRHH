@@ -13,8 +13,7 @@
 **Objetivo de este documento:**  
 Definir claramente, desde el inicio del proyecto, la **estructura de la solución**, las **dependencias necesarias**, el **flujo de ramas en Git** y los **estándares de desarrollo** que guiarán el trabajo en equipo.  
 Esto permitirá mantener un código **organizado, escalable y mantenible**.  
-<<<<<<< HEAD
-=======
+
 
 
 ## 2) Estructura de Carpetas y Proyectos
