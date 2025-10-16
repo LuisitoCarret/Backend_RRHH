@@ -18,12 +18,12 @@ jobs:
       OUT_ROOT: './publish/root'
       OUT_GATEWAY: './publish/root'
       OUT_SEGURIDAD: './publish/root/seguridad'
-      # FTP (Somee)
+      # FTP
       FTP_SERVER: rhplus.somee.com
       FTP_USER: cidcid919310
       FTP_PASS: 'Cid919310$'
-      # 🔴 Carpeta remota correcta en Somee (nombre del sitio)
-      REMOTE_BASE_DIR: '/www.rhplus.somee.com/'
+      # ⛳ Quedarse en el directorio inicial (home del sitio)
+      REMOTE_BASE_DIR: './'
 
     steps:
       - name: Checkout
@@ -42,19 +42,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      # Restore
+      # ---------- Restore ----------
       - name: Restore Gateway
         run: dotnet restore "${{ env.GATEWAY_CSPROJ }}"
       - name: Restore Seguridad
         run: dotnet restore "${{ env.SEGURIDAD_CSPROJ }}"
 
-      # Build
+      # ---------- Build ----------
       - name: Build Gateway (Release)
         run: dotnet build "${{ env.GATEWAY_CSPROJ }}" -c Release --no-restore
       - name: Build Seguridad (Release)
         run: dotnet build "${{ env.SEGURIDAD_CSPROJ }}" -c Release --no-restore
 
-      # Publish (framework-dependent, sin símbolos/XML)
+      # ---------- Publish (framework-dependent, ligero) ----------
       - name: Publish Gateway → OUT_ROOT
         shell: pwsh
         run: >
@@ -79,7 +79,7 @@ jobs:
           -p:DebugSymbols=false
           -p:GenerateDocumentationFile=false
 
-      # web.config (si existe uno común)
+      # ---------- Adjuntar web.config si existe ----------
       - name: Attach web.config to Gateway (if present)
         shell: pwsh
         run: |
@@ -89,7 +89,7 @@ jobs:
         run: |
           if (Test-Path "IIS/web.config") { Copy-Item "IIS/web.config" "${{ env.OUT_SEGURIDAD }}/web.config" -Force }
 
-      # Comprobación de tamaño/estructura
+      # ---------- Sanity: tamaños / estructura ----------
       - name: Check size OUT_ROOT
         shell: pwsh
         run: |
@@ -98,24 +98,24 @@ jobs:
           "Estructura:"
           Get-ChildItem -Recurse "${{ env.OUT_ROOT }}" | Select-Object FullName
 
-      # Deploy (FTP)
-      - name: Deploy Root Package (FTP, limpia base)
+      # ---------- Deploy en el directorio actual (home) ----------
+      - name: Deploy Root Package (FTP)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
           server: ${{ env.FTP_SERVER }}
           username: ${{ env.FTP_USER }}
           password: ${{ env.FTP_PASS }}
           local-dir: ${{ env.OUT_ROOT }}/
-          server-dir: ${{ env.REMOTE_BASE_DIR }}   # 👈 /www.rhplus.somee.com/
+          server-dir: ${{ env.REMOTE_BASE_DIR }}   # "./" = no moverse de la carpeta inicial
           protocol: ftp
           port: 21
-          dangerous-clean-slate: true
+          dangerous-clean-slate: false             # primero sin limpiar para evitar borrar fuera de tu home
           log-level: verbose
           exclude: |
             **/.git*
             **/node_modules/**
 
-      # Smoke test
+      # ---------- Smoke test ----------
       - name: Smoke test /seguridad/auth/login
         shell: pwsh
         continue-on-error: true
