@@ -14,6 +14,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="9.0.6" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.6" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.6" />
+    <PackageReference Include="Yarp.ReverseProxy" Version="2.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +28,10 @@
     <ProjectReference Include="..\Modulo.Evaluaciones.Infrastructure\Modulo.Evaluaciones.Infrastructure.csproj" />
     <ProjectReference Include="..\Modulo.Reclutamiento.Application\Modulo.Reclutamiento.Application.csproj" />
     <ProjectReference Include="..\Modulo.Reclutamiento.Infrastructure\Modulo.Reclutamiento.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>
