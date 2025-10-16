@@ -11,14 +11,11 @@ jobs:
 
     env:
       DOTNET_VERSION: '9.0.x'
-      # Proyectos
       GATEWAY_CSPROJ: 'Sistema de Gestion de RRHH/Api.Gateway.csproj'
       SEGURIDAD_CSPROJ: 'Modulo.Seguridad.API/Modulo.Seguridad.API.csproj'
-      # Carpetas locales
       OUT_ROOT: './publish/root'
       OUT_GATEWAY: './publish/root'
       OUT_SEGURIDAD: './publish/root/seguridad'
-      # FTP
       FTP_SERVER: rhplus.somee.com
       FTP_USER: cidcid919310
       FTP_PASS: 'Cid919310$'
@@ -37,24 +34,19 @@ jobs:
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
+          restore-keys: ${{ runner.os }}-nuget-
 
-      # ---------- Restore ----------
+      # Restore/Build
       - name: Restore Gateway
         run: dotnet restore "${{ env.GATEWAY_CSPROJ }}"
-
       - name: Restore Seguridad
         run: dotnet restore "${{ env.SEGURIDAD_CSPROJ }}"
-
-      # ---------- Build ----------
       - name: Build Gateway (Release)
         run: dotnet build "${{ env.GATEWAY_CSPROJ }}" -c Release --no-restore
-
       - name: Build Seguridad (Release)
         run: dotnet build "${{ env.SEGURIDAD_CSPROJ }}" -c Release --no-restore
 
-      # ---------- Publish ----------
+      # Publish (framework-dependent multi-file)
       - name: Publish Gateway → OUT_ROOT
         shell: pwsh
         run: >
@@ -62,12 +54,10 @@ jobs:
           -c Release
           -o ${{ env.OUT_GATEWAY }}
           -p:SelfContained=false
-          -p:PublishSingleFile=true
-          -p:IncludeNativeLibrariesInSingleFile=true
-          -p:UseAppHost=true
           -p:PublishReadyToRun=false
           -p:DebugType=None
           -p:DebugSymbols=false
+          -p:GenerateDocumentationFile=false
 
       - name: Publish Seguridad → OUT_SEGURIDAD
         shell: pwsh
@@ -76,47 +66,39 @@ jobs:
           -c Release
           -o ${{ env.OUT_SEGURIDAD }}
           -p:SelfContained=false
-          -p:PublishSingleFile=true
-          -p:IncludeNativeLibrariesInSingleFile=true
-          -p:UseAppHost=true
           -p:PublishReadyToRun=false
           -p:DebugType=None
           -p:DebugSymbols=false
+          -p:GenerateDocumentationFile=false
 
-      # ---------- Attach web.config ----------
+      # Attach web.config (usando los que te pasé arriba)
       - name: Attach web.config to Gateway
         shell: pwsh
         run: |
-          if (Test-Path "IIS/web.config") {
-            Copy-Item "IIS/web.config" "${{ env.OUT_ROOT }}/web.config" -Force
-          }
+          Copy-Item "Sistema de Gestion de RRHH/IIS/web.config" "${{ env.OUT_ROOT }}/web.config" -Force
 
       - name: Attach web.config to Seguridad
         shell: pwsh
         run: |
-          if (Test-Path "Modulo.Seguridad.API/IIS/web.config") {
-            Copy-Item "Modulo.Seguridad.API/IIS/web.config" "${{ env.OUT_SEGURIDAD }}/web.config" -Force
-          } elseif (Test-Path "IIS/web.config") {
-            Copy-Item "IIS/web.config" "${{ env.OUT_SEGURIDAD }}/web.config" -Force
-          }
+          Copy-Item "Modulo.Seguridad.API/IIS/web.config" "${{ env.OUT_SEGURIDAD }}/web.config" -Force
 
-      # ---------- Clean up IIS folders ----------
+      # Limpia carpetas IIS en artefactos si llegaran a colarse
       - name: Remove IIS folders from artifacts
         shell: pwsh
         run: |
           if (Test-Path "${{ env.OUT_ROOT }}/IIS") { Remove-Item -Recurse -Force "${{ env.OUT_ROOT }}/IIS" }
           if (Test-Path "${{ env.OUT_SEGURIDAD }}/IIS") { Remove-Item -Recurse -Force "${{ env.OUT_SEGURIDAD }}/IIS" }
 
-      # ---------- Debug info ----------
+      # Debug sizes
       - name: Check publish sizes
         shell: pwsh
         run: |
           $sizeRoot = (Get-ChildItem "${{ env.OUT_ROOT }}" -Recurse | Measure-Object -Property Length -Sum).Sum/1MB
-          Write-Host "Root: $([math]::Round($sizeRoot,2)) MB"
+          "Root: $([math]::Round($sizeRoot,2)) MB"
           $sizeSeg = (Get-ChildItem "${{ env.OUT_SEGURIDAD }}" -Recurse | Measure-Object -Property Length -Sum).Sum/1MB
-          Write-Host "Seguridad: $([math]::Round($sizeSeg,2)) MB"
+          "Seguridad: $([math]::Round($sizeSeg,2)) MB"
 
-      # ---------- Deploy Gateway ----------
+      # Deploy Gateway a carpeta del sitio (ajusta a tu nombre exacto)
       - name: Deploy Gateway to /www.RHPlus.somee.com/
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
@@ -134,7 +116,7 @@ jobs:
             **/node_modules/**
             **/IIS/**
 
-      # ---------- Deploy Seguridad ----------
+      # Deploy Seguridad (requiere que YA exista /seguridad/ en el FTP — como ya la creaste)
       - name: Deploy Seguridad to /www.RHPlus.somee.com/seguridad/
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
