@@ -22,7 +22,7 @@ jobs:
       FTP_SERVER: rhplus.somee.com
       FTP_USER: cidcid919310
       FTP_PASS: 'Cid919310$'
-      # Mantenerse en el directorio inicial (home del sitio)
+      # Quedarse en el directorio inicial (home del sitio)
       REMOTE_BASE_DIR: './'
 
     steps:
@@ -57,11 +57,6 @@ jobs:
         run: dotnet build "${{ env.SEGURIDAD_CSPROJ }}" -c Release --no-restore
 
       # ---------- Publish (SINGLE-FILE framework-dependent, sin compresión) ----------
-      # Claves:
-      #  - PublishSingleFile=true
-      #  - IncludeNativeLibrariesInSingleFile=true
-      #  - UseAppHost=true  (genera .exe aunque sea framework-dependent)
-      #  - SelfContained=false
       - name: Publish Gateway → OUT_ROOT (single-file)
         shell: pwsh
         run: >
@@ -92,8 +87,7 @@ jobs:
           -p:DebugSymbols=false
           -p:GenerateDocumentationFile=false
 
-      # ---------- Adjuntar web.config si existe ----------
-      # OJO: como ahora tendremos .exe, conviene que tu web.config apunte al .exe (te los pasé en el mensaje anterior).
+      # ---------- Copiar web.config (desde tu repo) ----------
       - name: Attach web.config to Gateway (if present)
         shell: pwsh
         run: |
@@ -102,7 +96,19 @@ jobs:
       - name: Attach web.config to Seguridad (if present)
         shell: pwsh
         run: |
-          if (Test-Path "IIS/web.config") { Copy-Item "IIS/web.config" "${{ env.OUT_SEGURIDAD }}/web.config" -Force }
+          if (Test-Path "Modulo.Seguridad.API/IIS/web.config") {
+            Copy-Item "Modulo.Seguridad.API/IIS/web.config" "${{ env.OUT_SEGURIDAD }}/web.config" -Force
+          } elseif (Test-Path "IIS/web.config") {
+            # fallback si usas un único web.config común
+            Copy-Item "IIS/web.config" "${{ env.OUT_SEGURIDAD }}/web.config" -Force
+          }
+
+      # ---------- Limpieza: eliminar carpetas IIS de los artefactos ----------
+      - name: Remove IIS folders from artifacts (avoid server 550)
+        shell: pwsh
+        run: |
+          if (Test-Path "${{ env.OUT_ROOT }}/IIS") { Remove-Item -Recurse -Force "${{ env.OUT_ROOT }}/IIS" }
+          if (Test-Path "${{ env.OUT_SEGURIDAD }}/IIS") { Remove-Item -Recurse -Force "${{ env.OUT_SEGURIDAD }}/IIS" }
 
       # ---------- Sanity: tamaños / estructura ----------
       - name: Check size OUT_ROOT
@@ -126,11 +132,13 @@ jobs:
           server-dir: ${{ env.REMOTE_BASE_DIR }}   # "./" = quedarse en el home del sitio
           protocol: ftp
           port: 21
-          dangerous-clean-slate: false             # primero sin limpiar para evitar borrar fuera del home
+          dangerous-clean-slate: false
           log-level: verbose
           exclude: |
             **/.git*
             **/node_modules/**
+            IIS/**
+            seguridad/IIS/**
 
       # ---------- Smoke test ----------
       - name: Smoke test /seguridad/auth/login
