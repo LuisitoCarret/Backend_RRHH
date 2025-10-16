@@ -1,4 +1,4 @@
-name: Deploy to Somee (Gateway + Seguridad)
+name: Deploy to Somee (Gateway + Seguridad) - Auto Detect Remote Dir
 
 on:
   push:
@@ -11,9 +11,9 @@ jobs:
 
     env:
       DOTNET_VERSION: '9.0.x'
-      # ⚙️ Ajusta estas rutas si tu estructura difiere
+      # ⚙️ Ajusta si difieren en tu repo
       GATEWAY_CSPROJ: 'Sistema de Gestion de RRHH/Api.Gateway.csproj'
-      SEGURIDAD_CSPROJ: 'Modulo.Seguridad.API/Modulo.Seguridad.API.csproj'
+      SEGURIDAD_CSPROJ: 'Sistema de Gestion de RRHH/Modulo.Seguridad.API/Modulo.Seguridad.API.csproj'
       OUT_GATEWAY: './publish/gateway'
       OUT_SEGURIDAD: './publish/seguridad'
       # 🔐 Credenciales directas (como pediste)
@@ -50,8 +50,8 @@ jobs:
       - name: Build Seguridad (Release)
         run: dotnet build "${{ env.SEGURIDAD_CSPROJ }}" -c Release --no-restore
 
-      # ---------- Publish (ligero) ----------
-      - name: Publish Gateway (framework-dependent)
+      # ---------- Publish (ligero / framework-dependent) ----------
+      - name: Publish Gateway
         shell: pwsh
         run: >
           dotnet publish "${{ env.GATEWAY_CSPROJ }}"
@@ -63,7 +63,7 @@ jobs:
           -p:DebugSymbols=false
           -p:GenerateDocumentationFile=false
 
-      - name: Publish Seguridad (framework-dependent)
+      - name: Publish Seguridad
         shell: pwsh
         run: >
           dotnet publish "${{ env.SEGURIDAD_CSPROJ }}"
@@ -75,18 +75,58 @@ jobs:
           -p:DebugSymbols=false
           -p:GenerateDocumentationFile=false
 
-      # ---------- (Opcional) Copiar web.config si lo tienes en el repo ----------
-      - name: Attach web.config to Gateway (if present)
+      # ---------- Detectar base remota automáticamente ----------
+      - name: Detect remote base dir
+        id: detect_dir
+        shell: pwsh
+        env:
+          CANDIDATES: "/,/wwwroot,/site/wwwroot,/public_html,/web,/inetpub/wwwroot"
+        run: |
+          $ErrorActionPreference = "SilentlyContinue"
+          $server = "${{ env.FTP_SERVER }}"
+          $user = "${{ env.FTP_USER }}"
+          $pass = "${{ env.FTP_PASS }}"
+          $candidates = "${{ env.CANDIDATES }}".Split(',')
+          $found = $null
+
+          foreach ($d in $candidates) {
+            $url = "ftp://$server$d/"
+            # list-only retorna 0 si el dir existe/accede
+            curl.exe -u "$user`:$pass" --silent --list-only $url | Out-Null
+            if ($LASTEXITCODE -eq 0) {
+              $found = $d
+              break
+            }
+          }
+
+          if (-not $found) {
+            Write-Host "No se pudo detectar la base remota. Usando '/' por defecto."
+            $found = "/"
+          }
+
+          Write-Host "REMOTE_BASE_DIR=$found" | Out-File -FilePath $env:GITHUB_ENV -Append
+          Write-Host "Base detectada: $found"
+
+      # ---------- Asegurar carpeta /seguridad en la base detectada ----------
+      - name: Ensure remote /seguridad exists
         shell: pwsh
         run: |
-          if (Test-Path "IIS/web.config") { Copy-Item "IIS/web.config" "${{ env.OUT_GATEWAY }}/web.config" -Force }
+          $server = "${{ env.FTP_SERVER }}"
+          $user = "${{ env.FTP_USER }}"
+          $pass = "${{ env.FTP_PASS }}"
+          $base = "${{ env.REMOTE_BASE_DIR }}"
+          $remoteSeg = "ftp://$server$base/seguridad/placeholder.txt"
 
-      - name: Attach web.config to Seguridad (if present)
-        shell: pwsh
-        run: |
-          if (Test-Path "IIS/web.config") { Copy-Item "IIS/web.config" "${{ env.OUT_SEGURIDAD }}/web.config" -Force }
+          Set-Content -Path placeholder.txt -Value "init"
+          curl.exe -u "$user`:$pass" --ftp-create-dirs -T placeholder.txt $remoteSeg
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "No se pudo crear la carpeta $($base)/seguridad. Revisa permisos y base dir."
+            exit 1
+          }
+          Remove-Item placeholder.txt -Force
+          Write-Host "Carpeta $($base)/seguridad verificada/creada correctamente."
 
-      # ---------- Sanity: tamaños ----------
+      # ---------- Tamaño de artefactos ----------
       - name: Check size Gateway
         shell: pwsh
         run: |
@@ -99,26 +139,15 @@ jobs:
           $size = (Get-ChildItem "${{ env.OUT_SEGURIDAD }}" -Recurse | Measure-Object -Property Length -Sum).Sum/1MB
           "Seguridad publish size: $([math]::Round($size,2)) MB"
 
-      # ---------- Crear carpeta remota /seguridad si no existe ----------
-      - name: Ensure remote '/seguridad' exists
-        shell: pwsh
-        run: |
-          Set-Content -Path placeholder.txt -Value "init"
-          curl -u "${{ env.FTP_USER }}:${{ env.FTP_PASS }}" `
-               --ftp-create-dirs `
-               -T placeholder.txt `
-               ftp://${{ env.FTP_SERVER }}/seguridad/placeholder.txt
-          Remove-Item placeholder.txt -Force
-
       # ---------- Deploy Gateway ----------
-      - name: Deploy Gateway (FTP, limpia raíz)
+      - name: Deploy Gateway (FTP, limpia base detectada)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
           server: ${{ env.FTP_SERVER }}
           username: ${{ env.FTP_USER }}
           password: ${{ env.FTP_PASS }}
           local-dir: ${{ env.OUT_GATEWAY }}/
-          server-dir: /               # ⬅️ Cambia a /wwwroot si tu host lo requiere
+          server-dir: ${{ env.REMOTE_BASE_DIR }}
           protocol: ftp
           port: 21
           dangerous-clean-slate: true
@@ -132,7 +161,7 @@ jobs:
           username: ${{ env.FTP_USER }}
           password: ${{ env.FTP_PASS }}
           local-dir: ${{ env.OUT_SEGURIDAD }}/
-          server-dir: /seguridad      # ⬅️ O /wwwroot/seguridad
+          server-dir: ${{ env.REMOTE_BASE_DIR }}/seguridad
           protocol: ftp
           port: 21
           dangerous-clean-slate: true
