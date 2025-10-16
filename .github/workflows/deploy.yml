@@ -13,7 +13,7 @@ jobs:
       DOTNET_VERSION: '9.0.x'
       # ⚙️ Ajusta estas rutas si tu estructura difiere
       GATEWAY_CSPROJ: 'Sistema de Gestion de RRHH/Api.Gateway.csproj'
-      SEGURIDAD_CSPROJ: '/Modulo.Seguridad.API/Modulo.Seguridad.API.csproj'
+      SEGURIDAD_CSPROJ: 'Modulo.Seguridad.API/Modulo.Seguridad.API.csproj'
       OUT_GATEWAY: './publish/gateway'
       OUT_SEGURIDAD: './publish/seguridad'
       # 🔐 Credenciales directas (como pediste)
