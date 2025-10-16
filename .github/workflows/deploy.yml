@@ -1,0 +1,141 @@
+name: Deploy to Somee via FTP (sprint3_cristian)
+
+on:
+  push:
+    branches: [ sprint3_cristian ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+    env:
+      DOTNET_VERSION: '9.0.x'
+      GATEWAY_CSPROJ: 'Sistema de Gestion de RRHH/Api.Gateway.csproj'
+      SEGURIDAD_CSPROJ: 'Modulo.Seguridad.API/Modulo.Seguridad.API.csproj'
+      OUT_GATEWAY: './publish/gateway'
+      OUT_SEGURIDAD: './publish/seguridad'
+      RUNTIME_ID: 'win-x86'
+      FTP_SERVER: 'RHPlus.somee.com'
+      FTP_USER: 'cidcid919310'
+      FTP_PASS: 'Cid919310$'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      # ------------ GATEWAY ------------
+      - name: Restore Gateway
+        run: dotnet restore "${{ env.GATEWAY_CSPROJ }}"
+
+      - name: Build Gateway
+        run: dotnet build "${{ env.GATEWAY_CSPROJ }}" -c Release --no-restore
+
+      - name: Publish Gateway
+        run: dotnet publish "${{ env.GATEWAY_CSPROJ }}" -c Release -r ${{ env.RUNTIME_ID }} --self-contained true -o "${{ env.OUT_GATEWAY }}"
+
+      # ------------ SEGURIDAD ------------
+      - name: Restore Seguridad
+        run: dotnet restore "${{ env.SEGURIDAD_CSPROJ }}"
+
+      - name: Build Seguridad
+        run: dotnet build "${{ env.SEGURIDAD_CSPROJ }}" -c Release --no-restore
+
+      - name: Publish Seguridad
+        run: dotnet publish "${{ env.SEGURIDAD_CSPROJ }}" -c Release -r ${{ env.RUNTIME_ID }} --self-contained true -o "${{ env.OUT_SEGURIDAD }}"
+
+      # ------------ OFFLINE (solo raíz) ------------
+      - name: Create app_offline.htm
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path "_maintenance" -Force | Out-Null
+          '@(Sitio en mantenimiento… vuelve en unos segundos)' | Out-File -FilePath "_maintenance/app_offline.htm" -Encoding utf8
+
+      - name: Stop site (root offline)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ env.FTP_SERVER }}
+          username: ${{ env.FTP_USER }}
+          password: ${{ env.FTP_PASS }}
+          local-dir: _maintenance/
+          server-dir: /www.RHPlus.somee.com/
+          protocol: ftp
+          dangerous-clean-slate: false
+
+      - name: Wait IIS
+        shell: pwsh
+        run: Start-Sleep -Seconds 8
+
+      # ------------ DEPLOY GATEWAY (raíz) ------------
+      - name: FTP Deploy Gateway
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ env.FTP_SERVER }}
+          username: ${{ env.FTP_USER }}
+          password: ${{ env.FTP_PASS }}
+          local-dir: ${{ env.OUT_GATEWAY }}/
+          server-dir: /www.RHPlus.somee.com/
+          protocol: ftp
+          dangerous-clean-slate: true
+
+      # ------------ DEPLOY SEGURIDAD (subapp /seguridad) ------------
+      - name: Ensure subfolder exists (seguridad)
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path "_empty" -Force | Out-Null
+
+      - name: Create seguridad folder if missing
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ env.FTP_SERVER }}
+          username: ${{ env.FTP_USER }}
+          password: ${{ env.FTP_PASS }}
+          local-dir: _empty/
+          server-dir: /www.RHPlus.somee.com/seguridad/
+          protocol: ftp
+          dangerous-clean-slate: false
+
+      - name: FTP Deploy Seguridad (subapp)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ env.FTP_SERVER }}
+          username: ${{ env.FTP_USER }}
+          password: ${{ env.FTP_PASS }}
+          local-dir: ${{ env.OUT_SEGURIDAD }}/
+          server-dir: /www.RHPlus.somee.com/seguridad/
+          protocol: ftp
+          dangerous-clean-slate: true
+
+      # ------------ QUITAR OFFLINE (raíz) ------------
+      - name: Remove app_offline.htm locally
+        shell: pwsh
+        run: Remove-Item "_maintenance/app_offline.htm" -ErrorAction SilentlyContinue
+
+      - name: Sync root to delete app_offline.htm
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ env.FTP_SERVER }}
+          username: ${{ env.FTP_USER }}
+          password: ${{ env.FTP_PASS }}
+          local-dir: ${{ env.OUT_GATEWAY }}/
+          server-dir: /www.RHPlus.somee.com/
+          protocol: ftp
+          dangerous-clean-slate: true
+
+      # ------------ SMOKE TEST ------------
+      - name: Smoke test Seguridad (login)
+        shell: pwsh
+        run: |
+          $url = "http://rhplus.somee.com/seguridad/auth/login"
+          $ok = $false
+          for ($i=1; $i -le 10; $i++) {
+            try {
+              $res = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 15 -Method Head
+              if ($res.StatusCode -ge 200 -and $res.StatusCode -lt 500) { Write-Host "Smoke test OK"; $ok = $true; break }
+            } catch { Start-Sleep -Seconds 6 }
+          }
+          if (-not $ok) { throw "Smoke test failed for $url" }
