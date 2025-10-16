@@ -56,12 +56,12 @@ jobs:
       - name: Build Seguridad (Release)
         run: dotnet build "${{ env.SEGURIDAD_CSPROJ }}" -c Release --no-restore
 
-      # ---------- Publish (SINGLE-FILE framework-dependent) ----------
-      # Claves B1:
+      # ---------- Publish (SINGLE-FILE framework-dependent, sin compresión) ----------
+      # Claves:
       #  - PublishSingleFile=true
       #  - IncludeNativeLibrariesInSingleFile=true
-      #  - EnableCompressionInSingleFile=true  (reduce tamaño)
-      #  - SelfContained=false  (menos peso, usa hosting bundle del server)
+      #  - UseAppHost=true  (genera .exe aunque sea framework-dependent)
+      #  - SelfContained=false
       - name: Publish Gateway → OUT_ROOT (single-file)
         shell: pwsh
         run: >
@@ -71,7 +71,7 @@ jobs:
           -p:SelfContained=false
           -p:PublishSingleFile=true
           -p:IncludeNativeLibrariesInSingleFile=true
-          -p:EnableCompressionInSingleFile=true
+          -p:UseAppHost=true
           -p:PublishReadyToRun=false
           -p:DebugType=None
           -p:DebugSymbols=false
@@ -86,13 +86,14 @@ jobs:
           -p:SelfContained=false
           -p:PublishSingleFile=true
           -p:IncludeNativeLibrariesInSingleFile=true
-          -p:EnableCompressionInSingleFile=true
+          -p:UseAppHost=true
           -p:PublishReadyToRun=false
           -p:DebugType=None
           -p:DebugSymbols=false
           -p:GenerateDocumentationFile=false
 
       # ---------- Adjuntar web.config si existe ----------
+      # OJO: como ahora tendremos .exe, conviene que tu web.config apunte al .exe (te los pasé en el mensaje anterior).
       - name: Attach web.config to Gateway (if present)
         shell: pwsh
         run: |
