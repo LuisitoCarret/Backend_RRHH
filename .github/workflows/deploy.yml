@@ -111,7 +111,7 @@ jobs:
           password: ${{ env.FTP_PASS }}
           local-dir: ${{ env.OUT_GATEWAY }}/
           server-dir: /
-          protocol: ftps
+          protocol: ftp
           dangerous-clean-slate: true
 
       # ---------- Deploy Seguridad ----------
@@ -123,7 +123,7 @@ jobs:
           password: ${{ env.FTP_PASS }}
           local-dir: ${{ env.OUT_SEGURIDAD }}/
           server-dir: /seguridad/
-          protocol: ftps
+          protocol: ftp
           dangerous-clean-slate: true
 
       # ---------- Smoke test ----------
