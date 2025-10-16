@@ -1,4 +1,4 @@
-name: Deploy to Somee (Gateway + Seguridad - single deploy)
+name: Deploy to Somee (Gateway + Seguridad - single-file)
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
       # Proyectos
       GATEWAY_CSPROJ: 'Sistema de Gestion de RRHH/Api.Gateway.csproj'
       SEGURIDAD_CSPROJ: 'Modulo.Seguridad.API/Modulo.Seguridad.API.csproj'
-      # Publicación
+      # Carpetas de publicación locales
       OUT_ROOT: './publish/root'
       OUT_GATEWAY: './publish/root'
       OUT_SEGURIDAD: './publish/root/seguridad'
@@ -22,7 +22,7 @@ jobs:
       FTP_SERVER: rhplus.somee.com
       FTP_USER: cidcid919310
       FTP_PASS: 'Cid919310$'
-      # ⛳ Quedarse en el directorio inicial (home del sitio)
+      # Mantenerse en el directorio inicial (home del sitio)
       REMOTE_BASE_DIR: './'
 
     steps:
@@ -45,35 +45,48 @@ jobs:
       # ---------- Restore ----------
       - name: Restore Gateway
         run: dotnet restore "${{ env.GATEWAY_CSPROJ }}"
+
       - name: Restore Seguridad
         run: dotnet restore "${{ env.SEGURIDAD_CSPROJ }}"
 
       # ---------- Build ----------
       - name: Build Gateway (Release)
         run: dotnet build "${{ env.GATEWAY_CSPROJ }}" -c Release --no-restore
+
       - name: Build Seguridad (Release)
         run: dotnet build "${{ env.SEGURIDAD_CSPROJ }}" -c Release --no-restore
 
-      # ---------- Publish (framework-dependent, ligero) ----------
-      - name: Publish Gateway → OUT_ROOT
+      # ---------- Publish (SINGLE-FILE framework-dependent) ----------
+      # Claves B1:
+      #  - PublishSingleFile=true
+      #  - IncludeNativeLibrariesInSingleFile=true
+      #  - EnableCompressionInSingleFile=true  (reduce tamaño)
+      #  - SelfContained=false  (menos peso, usa hosting bundle del server)
+      - name: Publish Gateway → OUT_ROOT (single-file)
         shell: pwsh
         run: >
           dotnet publish "${{ env.GATEWAY_CSPROJ }}"
           -c Release
           -o ${{ env.OUT_GATEWAY }}
           -p:SelfContained=false
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesInSingleFile=true
+          -p:EnableCompressionInSingleFile=true
           -p:PublishReadyToRun=false
           -p:DebugType=None
           -p:DebugSymbols=false
           -p:GenerateDocumentationFile=false
 
-      - name: Publish Seguridad → OUT_ROOT/seguridad
+      - name: Publish Seguridad → OUT_ROOT/seguridad (single-file)
         shell: pwsh
         run: >
           dotnet publish "${{ env.SEGURIDAD_CSPROJ }}"
           -c Release
           -o ${{ env.OUT_SEGURIDAD }}
           -p:SelfContained=false
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesInSingleFile=true
+          -p:EnableCompressionInSingleFile=true
           -p:PublishReadyToRun=false
           -p:DebugType=None
           -p:DebugSymbols=false
@@ -84,6 +97,7 @@ jobs:
         shell: pwsh
         run: |
           if (Test-Path "IIS/web.config") { Copy-Item "IIS/web.config" "${{ env.OUT_ROOT }}/web.config" -Force }
+
       - name: Attach web.config to Seguridad (if present)
         shell: pwsh
         run: |
@@ -95,8 +109,10 @@ jobs:
         run: |
           $size = (Get-ChildItem "${{ env.OUT_ROOT }}" -Recurse | Measure-Object -Property Length -Sum).Sum/1MB
           "Total publish size (root package): $([math]::Round($size,2)) MB"
-          "Estructura:"
-          Get-ChildItem -Recurse "${{ env.OUT_ROOT }}" | Select-Object FullName
+          "Estructura (top level):"
+          Get-ChildItem "${{ env.OUT_ROOT }}" | Select-Object Name, Length
+          "Estructura /seguridad (top level):"
+          Get-ChildItem "${{ env.OUT_SEGURIDAD }}" | Select-Object Name, Length
 
       # ---------- Deploy en el directorio actual (home) ----------
       - name: Deploy Root Package (FTP)
@@ -106,10 +122,10 @@ jobs:
           username: ${{ env.FTP_USER }}
           password: ${{ env.FTP_PASS }}
           local-dir: ${{ env.OUT_ROOT }}/
-          server-dir: ${{ env.REMOTE_BASE_DIR }}   # "./" = no moverse de la carpeta inicial
+          server-dir: ${{ env.REMOTE_BASE_DIR }}   # "./" = quedarse en el home del sitio
           protocol: ftp
           port: 21
-          dangerous-clean-slate: false             # primero sin limpiar para evitar borrar fuera de tu home
+          dangerous-clean-slate: false             # primero sin limpiar para evitar borrar fuera del home
           log-level: verbose
           exclude: |
             **/.git*
