@@ -1,8 +1,11 @@
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Controllers de presentación
 builder.Services.AddControllers()
     .AddApplicationPart(typeof(AssemblyMarker).Assembly);
+
+
 builder.Services
     .AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
@@ -10,6 +13,10 @@ builder.Services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+// ====== C O R S  (lee Cors:* de appsettings.json) ======
+builder.Services.AddCorsPolicies(builder.Configuration);
+// ====== Autenticación / Autorización (JWT) ======
 builder.Services.AddSeguridadModule(builder.Configuration);
 
 var key = builder.Configuration["Jwt:Key"] ?? throw new Exception("Jwt:Key missing");
@@ -39,15 +46,22 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 
+// ====== Swagger ======
 app.UseSwagger();
 app.UseSwaggerUI();
 
-
+// ====== Pipeline ======
 app.UseHttpsRedirection();
+
 app.UseRouting();
+
+// CORS ANTES de AuthN/AuthZ
+app.UseDefaultCors();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Endpoints
 app.MapControllers();
 
 //  Endpoint mínimo para validar el pipeline
