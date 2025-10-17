@@ -1,0 +1,194 @@
+name: Deploy to Somee (Gateway con app_offline)
+
+on:
+  push:
+    branches: 
+      - sprint3_cristian
+      - develop
+      - sprint3
+concurrency:
+  group: somee-deploy
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    env:
+      # --- VERSIÓN .NET ---
+      # Instalamos 9 y 8 por compatibilidad (por si el .csproj apunta a net8.0)
+      # Si estás 100% en net9.0 puedes dejar solo 9.0.x.
+      # --- RUTAS DE PROYECTO ---
+      GATEWAY_DIR: 'Sistema de Gestion de RRHH'
+      GATEWAY_CSPROJ: 'Sistema de Gestion de RRHH/Api.Gateway.csproj'  # se usará si existe
+
+      # --- CARPETA DE PUBLICACIÓN ---
+      OUT_GATEWAY: './publish/gateway'
+
+      # --- FTP (dejadas explícitas como pediste) ---
+      FTP_SERVER: rhplus.somee.com
+      FTP_USER: cidcid919310
+      FTP_PASS: 'Cid919310$'
+
+      # --- RUTA REMOTA EN SOMEE ---
+      REMOTE_ROOT: '/www.RHPlus.somee.com/'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDKs (9 y 8)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            9.0.x
+            8.0.x
+
+      - name: Cache NuGet
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: ${{ runner.os }}-nuget-
+
+      # ---------- Resolver proyecto (.csproj) ----------
+      - name: Resolver Gateway .csproj
+        id: resolve_gateway
+        shell: pwsh
+        run: |
+          $fixed = "${{ env.GATEWAY_CSPROJ }}"
+          if (Test-Path $fixed) {
+            "GATEWAY_RESOLVED=$fixed" | Out-File -FilePath $env:GITHUB_ENV -Append
+          } else {
+            $dir = "${{ env.GATEWAY_DIR }}"
+            if (-not (Test-Path $dir)) { throw "No existe la carpeta '$dir'." }
+            $csproj = Get-ChildItem -Path $dir -Filter *.csproj -Recurse | Select-Object -First 1
+            if (-not $csproj) { throw "No se encontró ningún .csproj en '$dir'." }
+            "GATEWAY_RESOLVED=$($csproj.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+            Write-Host "Gateway resuelto a: $($csproj.FullName)"
+          }
+
+      # ---------- Restore & Build ----------
+      - name: Restore Gateway
+        run: dotnet restore "${{ env.GATEWAY_RESOLVED }}"
+
+      - name: Build Gateway (Release)
+        run: dotnet build "${{ env.GATEWAY_RESOLVED }}" -c Release --no-restore
+
+      # ---------- Publish (.NET Core en IIS / Somee) ----------
+      - name: Publish Gateway
+        shell: pwsh
+        run: >
+          dotnet publish "${{ env.GATEWAY_RESOLVED }}"
+          -c Release
+          -o "${{ env.OUT_GATEWAY }}"
+          -p:SelfContained=false
+          -p:PublishReadyToRun=false
+          -p:DebugType=None
+          -p:DebugSymbols=false
+          -p:GenerateDocumentationFile=false
+
+      # ---------- Generar/adjuntar web.config (dinámico) ----------
+      - name: web.config para Gateway (dinámico con DLL detectada)
+        shell: pwsh
+        run: |
+          $pub = Resolve-Path "${{ env.OUT_GATEWAY }}"
+          $dll = Get-ChildItem $pub -Filter *.dll | Where-Object { $_.Name -notlike '*ref*' } | Sort-Object Length -Descending | Select-Object -First 1
+          if (-not $dll) { throw "No se encontró DLL en $pub" }
+
+          $repoConfig = "Sistema de Gestion de RRHH/IIS/web.config"
+          if (Test-Path $repoConfig) {
+            Copy-Item $repoConfig (Join-Path $pub 'web.config') -Force
+          } else {
+            @"
+            <configuration>
+              <system.webServer>
+                <handlers>
+                  <add name="aspNetCore" path="*" verb="*" modules="AspNetCoreModuleV2" resourceType="Unspecified" />
+                </handlers>
+                <aspNetCore processPath="dotnet" arguments=".\$($dll.Name)" stdoutLogEnabled="false" hostingModel="OutOfProcess">
+                  <environmentVariables>
+                    <add name="ASPNETCORE_ENVIRONMENT" value="Production" />
+                  </environmentVariables>
+                </aspNetCore>
+              </system.webServer>
+            </configuration>
+          "@ | Set-Content -Path (Join-Path $pub 'web.config') -Encoding UTF8
+          }
+
+      # ---------- Debug tamaños ----------
+      - name: Tamaños de publish
+        shell: pwsh
+        run: |
+          $s1 = (Get-ChildItem "${{ env.OUT_GATEWAY }}" -Recurse | Measure-Object -Property Length -Sum).Sum/1MB
+          Write-Host "Gateway: $([math]::Round($s1,2)) MB"
+
+      # ===================== OFFLINE =====================
+      - name: Crear app_offline.htm (local)
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path offline | Out-Null
+          @"
+          <!doctype html><html><head><meta charset="utf-8"/>
+          <title>Mantenimiento</title>
+          <meta name="viewport" content="width=device-width,initial-scale=1"/>
+          <style>body{font-family:sans-serif;display:grid;place-items:center;height:100vh;margin:0}.card{max-width:520px;padding:24px;border:1px solid #ddd;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.08)}</style>
+          </head><body><div class="card"><h1>Estamos actualizando</h1><p>Vuelve en unos segundos…</p></div></body></html>
+          "@ | Set-Content -Encoding UTF8 offline/app_offline.htm
+
+      - name: Poner OFFLINE (root)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ env.FTP_SERVER }}
+          username: ${{ env.FTP_USER }}
+          password: ${{ env.FTP_PASS }}
+          local-dir: offline/
+          server-dir: ${{ env.REMOTE_ROOT }}
+          protocol: ftp
+          port: 21
+          dangerous-clean-slate: false
+          log-level: minimal
+
+      # ===================== DEPLOY =====================
+      - name: Deploy Gateway a /www.RHPlus.somee.com/
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ env.FTP_SERVER }}
+          username: ${{ env.FTP_USER }}
+          password: ${{ env.FTP_PASS }}
+          local-dir: ${{ env.OUT_GATEWAY }}/
+          server-dir: ${{ env.REMOTE_ROOT }}
+          protocol: ftp
+          port: 21
+          dangerous-clean-slate: false
+          log-level: verbose
+          exclude: |
+            **/.git*
+            **/node_modules/**
+            **/IIS/**
+            **/app_offline.htm
+
+      # ===================== ONLINE =====================
+      - name: Quitar app_offline.htm (root)
+        shell: pwsh
+        run: |
+          try {
+            $uri = "ftp://${{ env.FTP_SERVER }}${{ env.REMOTE_ROOT }}app_offline.htm"
+            $req = [System.Net.FtpWebRequest]::Create($uri)
+            $req.Method  = [System.Net.WebRequestMethods+Ftp]::DeleteFile
+            $req.Credentials = New-Object System.Net.NetworkCredential("${{ env.FTP_USER }}","${{ env.FTP_PASS }}")
+            $req.UseBinary = $true
+            $req.EnableSsl = $false
+            $resp = $req.GetResponse(); $resp.Close()
+            Write-Host "Eliminado: $uri"
+          } catch {
+            Write-Host "No se pudo eliminar app_offline.htm => $($_.Exception.Message)"
+          }
+
+      # ---------- Artefactos (útil para depurar si falla) ----------
+      - name: Subir artefactos publicados
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: publish-outputs
+          path: ${{ env.OUT_GATEWAY }}/**
