@@ -2,9 +2,10 @@ name: Deploy to Somee (Gateway con app_offline)
 
 on:
   push:
-    branches: [ develop ]
-  workflow_dispatch:
-
+    branches: 
+      - sprint3_cristian
+      - develop
+      - sprint3
 concurrency:
   group: somee-deploy
   cancel-in-progress: true
