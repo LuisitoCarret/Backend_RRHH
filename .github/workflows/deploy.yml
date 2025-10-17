@@ -112,7 +112,7 @@ jobs:
                 </aspNetCore>
               </system.webServer>
             </configuration>
-            "@ | Set-Content -Path (Join-Path $pub 'web.config') -Encoding UTF8
+          "@ | Set-Content -Path (Join-Path $pub 'web.config') -Encoding UTF8
           }
 
       # ---------- Debug tamaños ----------
