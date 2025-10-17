@@ -9,3 +9,4 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.Extensions.DependencyInjection;
 global using Modulo.Seguridad.Infrastructure;
+global using Microsoft.AspNetCore.Http;
