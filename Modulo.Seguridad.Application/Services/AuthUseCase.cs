@@ -1,8 +1,4 @@
-﻿using Modulo.Seguridad.Application.Contracts;
-using Modulo.Seguridad.Domain.Interfaces;
-using BCryptNet = BCrypt.Net.BCrypt;
-
-namespace Modulo.Seguridad.Application.Services
+﻿namespace Modulo.Seguridad.Application.Services
 {
     public interface IAuthUseCase
     {
@@ -23,7 +19,6 @@ namespace Modulo.Seguridad.Application.Services
             if (user is null)
                 return (false, null, "Usuario o contraseña incorrectos.");
 
-            // 🔒 Verificación directa con BCrypt
             bool ok = BCryptNet.Verify(password, user.PasswordHash);
 
             if (!ok)

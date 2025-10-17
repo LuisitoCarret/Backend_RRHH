@@ -1,17 +1,8 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Modulo.Seguridad.Application.Contracts;
-using Modulo.Seguridad.Application.Services;
-
-namespace Modulo.Seguridad.API.Controllers
+﻿namespace Modulo.Seguridad.Presentation.Controllers
 {
     [ApiController]
     [Route("auth")]
-    public sealed class AuthController : ControllerBase
+    public sealed class AuthController: ControllerBase
     {
         private readonly IAuthUseCase _auth;
         private readonly IConfiguration _config;

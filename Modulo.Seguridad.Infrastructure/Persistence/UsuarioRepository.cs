@@ -1,12 +1,4 @@
-﻿
-
-using System.Data;
-using Dapper;
-using Microsoft.Data.SqlClient;
-using Modulo.Seguridad.Domain.Entities;
-using Modulo.Seguridad.Domain.Interfaces;
-
-namespace Modulo.Seguridad.Infrastructure.Persistence
+﻿namespace Modulo.Seguridad.Infrastructure.Persistence
 {
     public sealed class UsuarioRepository : IUsuarioRepository
     {

@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Modulo.Seguridad.Application\Modulo.Seguridad.Application.csproj" />
     <ProjectReference Include="..\Modulo.Seguridad.Domain\Modulo.Seguridad.Domain.csproj" />
   </ItemGroup>
 

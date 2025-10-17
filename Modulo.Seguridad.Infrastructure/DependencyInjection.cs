@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Modulo.Seguridad.Domain.Interfaces;
-using Modulo.Seguridad.Infrastructure.Persistence;
-
-namespace Modulo.Seguridad.Infrastructure
+﻿namespace Modulo.Seguridad.Infrastructure
 {
     public static class DependencyInjection
     {
@@ -11,10 +6,22 @@ namespace Modulo.Seguridad.Infrastructure
             this IServiceCollection services,
             IConfiguration config)
         {
-            var cs = config.GetConnectionString("DefaultConnection")
-                     ?? throw new InvalidOperationException("DefaultConnection not found.");
+            var csFromConfig = config?.GetConnectionString("DefaultConnection");
 
-            services.AddSingleton<IUsuarioRepository>(new UsuarioRepository(cs));
+            if (!string.IsNullOrWhiteSpace(csFromConfig))
+            {
+                services.AddScoped<IUsuarioRepository>(sp => new UsuarioRepository(csFromConfig));
+                return services;
+            }
+
+            services.AddScoped<IUsuarioRepository>(sp =>
+            {
+                var cfg = sp.GetRequiredService<IConfiguration>();
+                var cs = cfg.GetConnectionString("DefaultConnection")
+                         ?? throw new InvalidOperationException("DefaultConnection not found in IConfiguration.");
+                return new UsuarioRepository(cs);
+            });
+
             return services;
         }
     }

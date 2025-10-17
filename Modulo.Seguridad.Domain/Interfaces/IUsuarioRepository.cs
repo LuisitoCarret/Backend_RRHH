@@ -1,6 +1,4 @@
-﻿using Modulo.Seguridad.Domain.Entities;
-
-namespace Modulo.Seguridad.Domain.Interfaces
+﻿namespace Modulo.Seguridad.Domain.Interfaces
 {
     public interface IUsuarioRepository
     {
