@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Sistema_de_Gestion_de_RRHH.Configuration
+﻿namespace Sistema_de_Gestion_de_RRHH.Configuration
 {
     public static class CorsExtensions
     {
