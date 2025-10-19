@@ -16,8 +16,18 @@
         [AllowAnonymous]
         public async Task<ActionResult<object>> Login([FromBody] LoginRequest req)
         {
-            var (ok, data, error) = await _auth.LoginAsync(req.Email, req.Password);
-            if (!ok || data is null) return Unauthorized(new { message = error });
+            var (ok, data, reason ,error) = await _auth.LoginAsync(req.Email, req.Password);
+            if (!ok || data is null)
+            {
+                return reason switch
+                {
+                    LoginFailureReason.InvalidInput => BadRequest(new { message = error }), // 400
+                    LoginFailureReason.InvalidEmail => Unauthorized(new { message = error }), // 401
+                    LoginFailureReason.InvalidPassword => Unauthorized(new { message = error }), // 401
+                    LoginFailureReason.Inactive => StatusCode(StatusCodes.Status403Forbidden, new { message = error }), // 403
+                    _ => Unauthorized(new { message = "Usuario o contraseña incorrectos" })
+                };
+            }
 
             var (token, exp) = IssueJwt(data.UsuarioId, data.Email, data.Roles);
             return Ok(new
