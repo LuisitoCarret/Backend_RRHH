@@ -3,7 +3,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Controllers de presentación
 builder.Services.AddControllers()
-    .AddApplicationPart(typeof(AssemblyMarker).Assembly);
+    .AddApplicationPart(typeof(Modulo.Seguridad.Presentation.AssemblyMarker).Assembly)
+    .AddApplicationPart(typeof(Modulo.Empleados.Presentation.AssemblyMarker).Assembly);
+
+
 
 
 builder.Services
@@ -18,7 +21,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCorsPolicies(builder.Configuration);
 // ====== Autenticación / Autorización (JWT) ======
 builder.Services.AddSeguridadModule(builder.Configuration);
-
+builder.Services.AddEmpleadosModule(builder.Configuration);
 var key = builder.Configuration["Jwt:Key"] ?? throw new Exception("Jwt:Key missing");
 var issuer = builder.Configuration["Jwt:Issuer"];
 var audience = builder.Configuration["Jwt:Audience"];

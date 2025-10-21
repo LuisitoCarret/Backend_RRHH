@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Modulo.Empleados.Presentation\Modulo.Empleados.Presentation.csproj" />
     <ProjectReference Include="..\Modulo.Seguridad.Presentation\Modulo.Seguridad.Presentation.csproj" />
   </ItemGroup>
 
