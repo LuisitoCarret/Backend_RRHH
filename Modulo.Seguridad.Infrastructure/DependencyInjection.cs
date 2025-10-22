@@ -6,21 +6,19 @@
             this IServiceCollection services,
             IConfiguration config)
         {
-            var csFromConfig = config?.GetConnectionString("DefaultConnection");
+            var cs = config.GetConnectionString("DefaultConnection")
+                      ?? throw new InvalidOperationException("La cadena de conexión 'DefaultConnection' no fue encontrada.");
 
-            if (!string.IsNullOrWhiteSpace(csFromConfig))
-            {
-                services.AddScoped<IUsuarioRepository>(sp => new UsuarioRepository(csFromConfig));
-                return services;
-            }
+            // 🔹 Registrar DbContext
+            services.AddDbContext<SeguridadDbContext>(options =>
+                options.UseSqlServer(cs));
 
-            services.AddScoped<IUsuarioRepository>(sp =>
-            {
-                var cfg = sp.GetRequiredService<IConfiguration>();
-                var cs = cfg.GetConnectionString("DefaultConnection")
-                         ?? throw new InvalidOperationException("DefaultConnection not found in IConfiguration.");
-                return new UsuarioRepository(cs);
-            });
+            // 🔹 Registrar repositorios
+            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            services.AddScoped<IUsuarioEmpleadoRepository, UsuarioEmpleadoRepository>();
+
+            // 🔹 Registrar servicios de aplicación
+            services.AddScoped<IUserCreationService, UserCreationService>();
 
             return services;
         }

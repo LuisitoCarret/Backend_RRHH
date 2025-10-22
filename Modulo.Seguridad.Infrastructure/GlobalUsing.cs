@@ -6,3 +6,5 @@ global using Modulo.Seguridad.Domain.Interfaces;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Modulo.Seguridad.Infrastructure.Persistence;
+global using Microsoft.EntityFrameworkCore;
+global using Modulo.Seguridad.Infrastructure.Data;

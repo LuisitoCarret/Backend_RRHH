@@ -1,0 +1,9 @@
+﻿global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Modulo.Empleados.Application.Services;
+global using Modulo.Empleados.Infrastructure;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Mvc;
+global using Modulo.Empleados.Application.Contracts;
+global using Modulo.Empleados.Application.Dto;
+global using Modulo.Empleados.Application.Mapping;

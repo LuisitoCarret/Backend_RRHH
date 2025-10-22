@@ -1,0 +1,11 @@
+﻿global using Modulo.Empleados.Domain.Entities;
+global using Modulo.Empleados.Domain.Interfaces;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Modulo.Empleados.Infrastructure.Persistence;
+global using Microsoft.EntityFrameworkCore;
+global using Modulo.Empleados.Infrastructure.Data;
+global using Modulo.Empleados.Domain.Filter;
+global using Microsoft.Data.SqlClient;
+global using System.Data;
+global using Modulo.Empleados.Application.Services;

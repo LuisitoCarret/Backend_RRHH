@@ -2,41 +2,54 @@
 {
     public sealed class UsuarioRepository : IUsuarioRepository
     {
-        private readonly string _connectionString;
-        public UsuarioRepository(string connectionString) => _connectionString = connectionString;
+        private readonly SeguridadDbContext _context;
 
+        public UsuarioRepository(SeguridadDbContext context)
+        {
+            _context = context;
+        }
         public async Task<Usuario?> GetByEmailActivoAsync(string email)
         {
-            using IDbConnection conn = new SqlConnection(_connectionString);
-            return await conn.QueryFirstOrDefaultAsync<Usuario>(
-                @"SELECT usuario_id AS UsuarioId, email, password_hash AS PasswordHash, nombre, estatus
-                  FROM seguridad.usuarios
-                  WHERE email = @email AND estatus = 'activo';",
-                new { email });
+            return await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower() && u.Estatus == "activo");
         }
 
         public async Task<Usuario?> GetByEmailAsync(string email)
         {
-            using IDbConnection conn = new SqlConnection(_connectionString);
-            return await conn.QueryFirstOrDefaultAsync<Usuario>(
-                @"SELECT usuario_id AS UsuarioId, email, password_hash AS PasswordHash, nombre, estatus
-                  FROM seguridad.usuarios
-                  WHERE LOWER(email) = LOWER(@email);",
-                new { email = email?.Trim() });
+            return await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
         }
-
 
         public async Task<string[]> GetRolesByUsuarioIdAsync(long usuarioId)
         {
-            using IDbConnection conn = new SqlConnection(_connectionString);
-            var rows = await conn.QueryAsync<string>(
-                @"SELECT r.slug
-                  FROM seguridad.roles r
-                  JOIN seguridad.usuarios_roles ur ON ur.rol_id = r.rol_id
-                  WHERE ur.usuario_id = @usuarioId;",
-                new { usuarioId });
+            return await _context.UsuariosRoles
+                .Where(ur => ur.UsuarioId == usuarioId)
+                .Select(ur => ur.Rol.Slug)
+                .ToArrayAsync();
+        }
 
-            return rows?.ToArray() ?? Array.Empty<string>();
+        public async Task DeleteRolesByUsuarioIdAsync(long usuarioId)
+        {
+            var roles = await _context.UsuariosRoles
+        .Where(ur => ur.UsuarioId == usuarioId)
+        .ToListAsync();
+
+            if (roles.Count > 0)
+            {
+                _context.UsuariosRoles.RemoveRange(roles);
+                await _context.SaveChangesAsync();
+            }
+        }
+        public async Task DeleteAsync(long usuarioId)
+        {
+            var usuario = await _context.Usuarios
+              .FirstOrDefaultAsync(u => u.UsuarioId == usuarioId);
+
+            if (usuario != null)
+            {
+                _context.Usuarios.Remove(usuario);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

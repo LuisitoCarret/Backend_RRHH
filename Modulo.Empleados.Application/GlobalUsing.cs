@@ -1,0 +1,10 @@
+﻿global using AutoMapper;
+global using Modulo.Empleados.Application.Contracts;
+global using Modulo.Empleados.Application.Dto;
+global using Modulo.Empleados.Domain.Entities;
+global using Modulo.Empleados.Domain.Interfaces;
+global using FluentValidation;
+global using Modulo.Empleados.Domain.Filter;
+global using Modulo.Seguridad.Domain.Entities;
+global using Modulo.Seguridad.Domain.Interfaces;
+global using System.Text.Json.Serialization;
