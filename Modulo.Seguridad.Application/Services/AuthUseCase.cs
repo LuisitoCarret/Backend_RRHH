@@ -18,7 +18,7 @@
         public async Task<(bool ok, LoginResult? data, LoginFailureReason? reason, string error)> LoginAsync(string email, string password)
         {
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
-                return (false, null, LoginFailureReason.InvalidInput, "Credenciales inválidas");
+                return (false, null, LoginFailureReason.InvalidInput, "Credenciales invalidas");
 
             var normalizedEmail = email.Trim();
 

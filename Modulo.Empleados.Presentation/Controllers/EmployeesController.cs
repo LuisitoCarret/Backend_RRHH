@@ -87,7 +87,7 @@ namespace Modulo.Empleados.Presentation.Controllers
         {
             var val = User.FindFirstValue("empleado_id");
             if (string.IsNullOrWhiteSpace(val))
-                throw new InvalidOperationException("El JWT no contiene el empleado_Id.");
+                throw new InvalidOperationException("El JWT no contiene el empleado_id.");
             return int.Parse(val);
         }
 
