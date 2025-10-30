@@ -8,12 +8,17 @@
     public sealed class AuthUseCase : IAuthUseCase
     {
         private readonly IUsuarioRepository _repo;
-        public AuthUseCase(IUsuarioRepository repo) => _repo = repo;
+        private readonly IUsuarioEmpleadoRepository _usuarioEmpleadoRepo;
+        public AuthUseCase(IUsuarioRepository usuarioRepo, IUsuarioEmpleadoRepository usuarioEmpleadoRepo)
+        {
+            _repo = usuarioRepo;
+            _usuarioEmpleadoRepo = usuarioEmpleadoRepo;
+        }
 
         public async Task<(bool ok, LoginResult? data, LoginFailureReason? reason, string error)> LoginAsync(string email, string password)
         {
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
-                return (false, null, LoginFailureReason.InvalidInput, "Credenciales inválidas");
+                return (false, null, LoginFailureReason.InvalidInput, "Credenciales invalidas");
 
             var normalizedEmail = email.Trim();
 
@@ -31,11 +36,14 @@
 
             var roles = await _repo.GetRolesByUsuarioIdAsync(user.UsuarioId);
 
+            var empleadoId = await _usuarioEmpleadoRepo.GetEmpleadoIdByUsuarioIdAsync(user.UsuarioId);
+
             var lr = new LoginResult
             {
                 UsuarioId = user.UsuarioId,
                 Email = user.Email,
-                Roles = roles
+                Roles = roles,
+                EmpleadoId = (int?)empleadoId
             };
 
             return (true, lr, LoginFailureReason.None, string.Empty);

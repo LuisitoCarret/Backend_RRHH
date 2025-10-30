@@ -1,10 +1,11 @@
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Controllers de presentación
+// Controllers de presentacion
 builder.Services.AddControllers()
-    .AddApplicationPart(typeof(AssemblyMarker).Assembly);
+    .AddApplicationPart(Assembly.Load("Modulo.Empleados.Presentation"))
+    .AddApplicationPart(Assembly.Load("Modulo.Seguridad.Presentation"));
 
+builder.Services.AddValidatorsFromAssemblyContaining<CreateEmpleadoValidator>();
 
 builder.Services
     .AddReverseProxy()
@@ -16,8 +17,12 @@ builder.Services.AddSwaggerGen();
 
 // ====== C O R S  (lee Cors:* de appsettings.json) ======
 builder.Services.AddCorsPolicies(builder.Configuration);
-// ====== Autenticación / Autorización (JWT) ======
+
+//Seguridad
 builder.Services.AddSeguridadModule(builder.Configuration);
+
+//Empleados
+builder.Services.AddEmpleadosModule(builder.Configuration);
 
 var key = builder.Configuration["Jwt:Key"] ?? throw new Exception("Jwt:Key missing");
 var issuer = builder.Configuration["Jwt:Issuer"];

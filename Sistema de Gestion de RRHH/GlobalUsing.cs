@@ -3,3 +3,7 @@ global using Microsoft.IdentityModel.Tokens;
 global using Modulo.Seguridad.Presentation;
 global using System.Text;
 global using Sistema_de_Gestion_de_RRHH.Configuration;
+global using Modulo.Empleados.Presentation;
+global using System.Reflection;
+global using FluentValidation;
+global using Modulo.Empleados.Application.Validators;
