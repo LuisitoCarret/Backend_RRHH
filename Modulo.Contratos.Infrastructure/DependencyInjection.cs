@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Modulo.Contratos.Domain.Interfaces;
 using Modulo.Contratos.Infrastructure.Persistence;
-
+using Modulo.Contratos.Application.Services;
 namespace Modulo.Contratos.Infrastructure;
 
 public static class DependencyInjection
@@ -21,6 +21,7 @@ public static class DependencyInjection
 
         services.AddSingleton(new SqlOptions(cs));
         services.AddScoped<IContratoRepository, ContratoRepository>();
+        services.AddScoped<ContratoCommandService>();
         return services;
     }
 }
