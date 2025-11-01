@@ -1,24 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using FluentValidation;
-using Modulo.Contratos.Application.Contracts;
-
-namespace Modulo.Contratos.Application.Validators;
+﻿namespace Modulo.Contratos.Application.Validators;
 
 public sealed class UpdateContractValidator : AbstractValidator<UpdateContractRequest>
 {
     public UpdateContractValidator()
     {
-        RuleFor(x => x.TipoContratoId).GreaterThan(0);
-        RuleFor(x => x.EstatusContratoId).GreaterThan(0);
-        RuleFor(x => x.FechaInicio).NotEmpty();
-        RuleFor(x => x.SalarioBase).GreaterThan(0);
-        RuleFor(x => x).Must(x =>
-            !x.FechaFin.HasValue || x.FechaFin.Value.Date > x.FechaInicio.Date
-        ).WithMessage("fechaFin debe ser mayor a fechaInicio cuando se envíe.");
+        // Tipo de contrato opcional pero válido si se envía
+        When(x => x.TipoContratoId.HasValue, () =>
+        {
+            RuleFor(x => x.TipoContratoId)
+                .GreaterThan(0)
+                .WithMessage("Debe especificar un tipo de contrato válido.");
+        });
+
+        // Validar salario si se envía
+        When(x => x.SalarioBase.HasValue, () =>
+        {
+            RuleFor(x => x.SalarioBase)
+                .GreaterThan(0)
+                .WithMessage("El salario base debe ser mayor a 0.");
+        });
+
+        // Validar fechas si ambas se envían
+        When(x => x.FechaInicio.HasValue && x.FechaFin.HasValue, () =>
+        {
+            RuleFor(x => x)
+                .Must(x => x.FechaFin > x.FechaInicio)
+                .WithMessage("La fecha de fin debe ser mayor a la fecha de inicio.");
+        });
     }
 }
