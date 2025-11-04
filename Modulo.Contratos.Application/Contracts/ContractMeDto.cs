@@ -8,5 +8,6 @@
         public DateTime FechaInicio { get; set; }
         public DateTime? FechaFin { get; set; }
         public decimal SalarioBase { get; set; }
+        public string? Observaciones { get; set; }
     }
 }
