@@ -28,6 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Modulo.Asistencia.Presentation\Modulo.Asistencias.Presentation.csproj" />
+    <ProjectReference Include="..\Modulo.Contratos.Presentation\Modulo.Contratos.Presentation.csproj" />
     <ProjectReference Include="..\Modulo.Empleados.Presentation\Modulo.Empleados.Presentation.csproj" />
     <ProjectReference Include="..\Modulo.Seguridad.Presentation\Modulo.Seguridad.Presentation.csproj" />
   </ItemGroup>
