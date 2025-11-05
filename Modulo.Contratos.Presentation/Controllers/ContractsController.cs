@@ -9,8 +9,12 @@ public sealed class ContractsController : ControllerBase
     private readonly EmployeeWithoutContractService _employeeService;
     private readonly ContractService _contractService;
     private readonly ContractDetailsService _contractDetails;
-    public ContractsController(ContratoCommandService svc,EmployeeWithoutContractService employeeService, 
-        ContractService contractService,ContractDetailsService contractDetails)
+
+    public ContractsController(
+        ContratoCommandService svc,
+        EmployeeWithoutContractService employeeService,
+        ContractService contractService,
+        ContractDetailsService contractDetails)
     {
         _svc = svc;
         _employeeService = employeeService;
@@ -24,11 +28,42 @@ public sealed class ContractsController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "admin,gestor_empleados")]
     [ProducesResponseType(typeof(ContractDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Create([FromBody] CreateContractRequest req, CancellationToken ct)
     {
-        var created = await _svc.CreateAsync(req, ct);
-        return StatusCode(StatusCodes.Status201Created, created);
+        try
+        {
+            var created = await _svc.CreateAsync(req, ct);
+            return StatusCode(StatusCodes.Status201Created, created);
+        }
+        catch (BusinessRuleException ex)
+        {
+            return BadRequest(new ValidationProblemDetails
+            {
+                Title = "Regla de negocio violada",
+                Detail = ex.Message,
+                Status = StatusCodes.Status400BadRequest
+            });
+        }
+        catch (SqlException ex)
+        {
+            return BadRequest(new ValidationProblemDetails
+            {
+                Title = "Error SQL",
+                Detail = ex.Message,
+                Status = StatusCodes.Status400BadRequest
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
+            {
+                Title = "Error interno del servidor",
+                Detail = ex.Message,
+                Status = StatusCodes.Status500InternalServerError
+            });
+        }
     }
 
     /// <summary>
@@ -39,11 +74,42 @@ public sealed class ContractsController : ControllerBase
     [Authorize(Roles = "admin,gestor_empleados")]
     [ProducesResponseType(typeof(ContractDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateContractRequest req, CancellationToken ct)
     {
-        // Ya no recibimos empleadoId por query; se mantiene internamente.
-        var updated = await _svc.UpdateAsync(id, 0, req, ct); // empleadoId no se usa en SP
-        return updated is null ? NotFound() : Ok(updated);
+        try
+        {
+            var updated = await _svc.UpdateAsync(id, 0, req, ct); // empleadoId ya no se usa
+            return updated is null ? NotFound() : Ok(updated);
+        }
+        catch (BusinessRuleException ex)
+        {
+            return BadRequest(new ValidationProblemDetails
+            {
+                Title = "Regla de negocio violada",
+                Detail = ex.Message,
+                Status = StatusCodes.Status400BadRequest
+            });
+        }
+        catch (SqlException ex)
+        {
+            return BadRequest(new ValidationProblemDetails
+            {
+                Title = "Error SQL",
+                Detail = ex.Message,
+                Status = StatusCodes.Status400BadRequest
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
+            {
+                Title = "Error interno del servidor",
+                Detail = ex.Message,
+                Status = StatusCodes.Status500InternalServerError
+            });
+        }
     }
 
     /// <summary>
@@ -53,10 +119,42 @@ public sealed class ContractsController : ControllerBase
     [Authorize(Roles = "admin,gestor_empleados")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete([FromRoute] int id, CancellationToken ct)
     {
-        var ok = await _svc.DeleteAsync(id, ct);
-        return ok ? NoContent() : NotFound();
+        try
+        {
+            var ok = await _svc.DeleteAsync(id, ct);
+            return ok ? NoContent() : NotFound();
+        }
+        catch (BusinessRuleException ex)
+        {
+            return BadRequest(new ValidationProblemDetails
+            {
+                Title = "Regla de negocio violada",
+                Detail = ex.Message,
+                Status = StatusCodes.Status400BadRequest
+            });
+        }
+        catch (SqlException ex)
+        {
+            return BadRequest(new ValidationProblemDetails
+            {
+                Title = "Error SQL",
+                Detail = ex.Message,
+                Status = StatusCodes.Status400BadRequest
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
+            {
+                Title = "Error interno del servidor",
+                Detail = ex.Message,
+                Status = StatusCodes.Status500InternalServerError
+            });
+        }
     }
 
     /// <summary>
@@ -65,11 +163,42 @@ public sealed class ContractsController : ControllerBase
     [HttpPost("{id:int}/renewals")]
     [Authorize(Roles = "admin,gestor_empleados")]
     [ProducesResponseType(typeof(RenewalDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Renew([FromRoute] int id, [FromBody] CreateRenewalRequest req, CancellationToken ct)
     {
-        var result = await _svc.RenewAsync(id, req, ct);
-        return StatusCode(StatusCodes.Status201Created, result);
+        try
+        {
+            var result = await _svc.RenewAsync(id, req, ct);
+            return StatusCode(StatusCodes.Status201Created, result);
+        }
+        catch (BusinessRuleException ex)
+        {
+            return BadRequest(new ValidationProblemDetails
+            {
+                Title = "Regla de negocio violada",
+                Detail = ex.Message,
+                Status = StatusCodes.Status400BadRequest
+            });
+        }
+        catch (SqlException ex)
+        {
+            return BadRequest(new ValidationProblemDetails
+            {
+                Title = "Error SQL",
+                Detail = ex.Message,
+                Status = StatusCodes.Status400BadRequest
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
+            {
+                Title = "Error interno del servidor",
+                Detail = ex.Message,
+                Status = StatusCodes.Status500InternalServerError
+            });
+        }
     }
 
     [HttpGet("available-employees")]
@@ -83,10 +212,10 @@ public sealed class ContractsController : ControllerBase
     [HttpGet]
     [Authorize(Roles = "admin,gestor_empleados")]
     public async Task<IActionResult> GetAll(
-          [FromQuery] DateTime? fechaInicioDesde = null,
-          [FromQuery] DateTime? fechaFinHasta = null,
-          [FromQuery] int? tipoContratoId = null,
-          [FromQuery] int? estatusContratoId = null)
+        [FromQuery] DateTime? fechaInicioDesde = null,
+        [FromQuery] DateTime? fechaFinHasta = null,
+        [FromQuery] int? tipoContratoId = null,
+        [FromQuery] int? estatusContratoId = null)
     {
         var contratos = await _contractService.ListarContratosAsync(fechaInicioDesde, fechaFinHasta, tipoContratoId, estatusContratoId);
         return Ok(contratos);
@@ -97,7 +226,6 @@ public sealed class ContractsController : ControllerBase
     public async Task<IActionResult> GetContratoDetalle(int id)
     {
         var contrato = await _contractDetails.ObtenerDetalleAsync(id);
-
         if (contrato == null)
             return NotFound(new { mensaje = "Contrato no encontrado" });
 
@@ -112,13 +240,11 @@ public sealed class ContractsController : ControllerBase
         return Ok(tipos);
     }
 
-
     [HttpGet("me")]
     [Authorize(Roles = "empleado")]
     public async Task<IActionResult> GetMyContract()
     {
         var contrato = await _contractService.ObtenerContratoVigenteActualAsync(User);
-
         if (contrato == null)
             return NotFound(new { mensaje = "No se encontró un contrato vigente." });
 

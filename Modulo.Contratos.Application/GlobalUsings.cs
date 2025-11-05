@@ -5,3 +5,5 @@ global using Modulo.Contratos.Application.Mapping;
 global using Modulo.Contratos.Domain.Interfaces;
 global using FluentValidation;
 global using Modulo.Contratos.Application.Interfaces;
+global using Modulo.Contratos.Application.Common;
+global using Microsoft.Data.SqlClient;
