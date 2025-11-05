@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Modulo.Asistencias.Domain.Entities;
+﻿namespace Modulo.Asistencias.Domain.Entities;
 
 public sealed class AsistenciaListado
 {

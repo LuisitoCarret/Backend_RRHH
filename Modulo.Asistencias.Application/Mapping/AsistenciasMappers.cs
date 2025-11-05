@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Modulo.Asistencias.Application.Contracts;
-using Modulo.Asistencias.Domain.Entities;
-
-namespace Modulo.Asistencias.Application.Mapping;
+﻿namespace Modulo.Asistencias.Application.Mapping;
 
 public static class AsistenciasMappers
 {
@@ -45,4 +36,32 @@ public static class AsistenciasMappers
         Estado = x.Estado,
         Mensaje = x.Mensaje
     };
+
+    public static AsistenciaInsertResponseDto ToDto(this AsistenciaActualizada x) => new()
+    {
+        AsistenciaId = x.AsistenciaId,
+        EmpleadoId = x.EmpleadoId,
+        NombreEmpleado = x.NombreEmpleado,
+        Turno = x.Turno,
+        Fecha = x.Fecha,
+        HoraInicioTurno = x.HoraInicioTurno,
+        HoraFinTurno = x.HoraFinTurno,
+        ToleranciaMinutos = x.ToleranciaMinutos,
+        HoraEntradaReal = x.HoraEntradaReal,
+        HoraSalidaReal = x.HoraSalidaReal,
+        RetardoMinutos = x.RetardoMinutos,
+        Estado = x.Estado,
+        Mensaje = x.Mensaje
+    };
+
+    public static AsistenciaReporteMensualDto ToDto(this AsistenciaReporteMensual x) => new()
+    {
+        EmpleadoId = x.EmpleadoId,
+        NombreEmpleado = x.NombreEmpleado,
+        DiasAsistidos = x.DiasAsistidos,
+        TotalRetardos = x.TotalRetardos,
+        PendientesDeSalida = x.PendientesDeSalida,
+        TotalAusencias = x.TotalAusencias
+    };
+
 }

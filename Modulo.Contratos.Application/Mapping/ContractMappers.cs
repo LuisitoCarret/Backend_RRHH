@@ -1,21 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Modulo.Contratos.Application.Contracts;
-using Modulo.Contratos.Domain.Entities;
-
-namespace Modulo.Contratos.Application.Mapping;
+﻿namespace Modulo.Contratos.Application.Mapping;
 
 public static class ContractMappers
 {
     public static Contrato ToEntity(this CreateContractRequest r) => new()
     {
         EmpleadoId = r.EmpleadoId,
-        TipoContratoId = r.TipoContratoId,
-        EstatusContratoId = r.EstatusContratoId,
+        TipoContratoId = r.TipoContratoId, // viene del front
         FechaInicio = r.FechaInicio.ToString("yyyy-MM-dd"),
         FechaFin = r.FechaFin?.ToString("yyyy-MM-dd"),
         SalarioBase = r.SalarioBase,
@@ -26,11 +16,10 @@ public static class ContractMappers
     {
         Id = contratoId,
         EmpleadoId = empleadoId,
-        TipoContratoId = r.TipoContratoId,
-        EstatusContratoId = r.EstatusContratoId,
-        FechaInicio = r.FechaInicio.ToString("yyyy-MM-dd"),
+        TipoContratoId = r.TipoContratoId ?? default, // si no se envía, SP mantiene actual
+        FechaInicio = r.FechaInicio?.ToString("yyyy-MM-dd"),
         FechaFin = r.FechaFin?.ToString("yyyy-MM-dd"),
-        SalarioBase = r.SalarioBase,
+        SalarioBase = r.SalarioBase ?? default,
         Observaciones = r.Observaciones
     };
 
@@ -38,8 +27,11 @@ public static class ContractMappers
     {
         Id = c.Id,
         EmpleadoId = c.EmpleadoId,
+        NombreEmpleado = c.NombreEmpleado,
         TipoContratoId = c.TipoContratoId,
+        TipoContratoNombre = c.TipoContratoNombre,
         EstatusContratoId = c.EstatusContratoId,
+        EstatusContratoNombre = c.EstatusContratoNombre,
         FechaInicio = c.FechaInicio,
         FechaFin = c.FechaFin,
         SalarioBase = c.SalarioBase,
@@ -52,6 +44,6 @@ public static class ContractMappers
         ContratoId = r.ContratoId,
         FechaRenovacion = r.FechaRenovacion,
         NuevaFechaFin = r.NuevaFechaFin,
-        Comentario = r.Comentario
+        Comentario = r.Comentario,
     };
 }

@@ -1,11 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Modulo.Asistencias.Application.Common;
-using Modulo.Asistencias.Application.Contracts;
-using Modulo.Asistencias.Application.Services;
-
-namespace Modulo.Asistencias.Presentation.Controllers;
+﻿namespace Modulo.Asistencias.Presentation.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -50,4 +43,24 @@ public sealed class AsistenciasController : ControllerBase
             });
         }
     }
+
+    [HttpPut("{id:int}")]
+    [Authorize(Roles = "admin,gestor_empleados")]
+    [ProducesResponseType(typeof(AsistenciaInsertResponseDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Actualizar(int id, [FromBody] AsistenciaUpdateRequest req, CancellationToken ct)
+    {
+        var result = await _svc.ActualizarAsync(id, req, ct);
+        return Ok(result);
+    }
+
+    [HttpGet("reporte-mensual")]
+    [Authorize(Roles = "admin,gestor_empleados")]
+    [ProducesResponseType(typeof(IEnumerable<AsistenciaReporteMensualDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ReporteMensual([FromQuery] DateTime fechaInicio, [FromQuery] DateTime fechaFin, CancellationToken ct)
+    {
+        var data = await _svc.ReporteMensualAsync(fechaInicio, fechaFin, ct);
+        return Ok(data);
+    }
+
+
 }

@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Modulo.Asistencias.Domain.Interfaces;
-using Modulo.Asistencias.Infrastructure.Persistence;
-
-namespace Modulo.Asistencias.Infrastructure;
+﻿namespace Modulo.Asistencias.Infrastructure;
 
 public static class DependencyInjection
 {

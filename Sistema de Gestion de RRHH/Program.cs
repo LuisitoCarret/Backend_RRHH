@@ -15,7 +15,7 @@ builder.Services
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddHttpContextAccessor();
 
 // ====== C O R S  (lee Cors:* de appsettings.json) ======
 builder.Services.AddCorsPolicies(builder.Configuration);

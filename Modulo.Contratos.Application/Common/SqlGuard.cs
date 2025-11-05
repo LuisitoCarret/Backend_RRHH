@@ -1,8 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using System.Text;
-using Modulo.Contratos.Application.Common;
-
-namespace Modulo.Contratos.Infrastructure.Common;
+﻿namespace Modulo.Contratos.Infrastructure.Common;
 
 public static class SqlGuard
 {
