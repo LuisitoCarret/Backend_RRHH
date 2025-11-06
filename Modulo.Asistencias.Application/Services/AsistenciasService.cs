@@ -11,7 +11,18 @@ public sealed class AsistenciasService
     }
 
     public async Task<IReadOnlyList<AsistenciaListItemDto>> ListarAsync(DateTime? desde, DateTime? hasta, int? turnoId, CancellationToken ct)
-        => (await _repo.ListarAsync(desde, hasta, turnoId, ct)).Select(r => r.ToDto()).ToList();
+    {
+        if (desde is null && hasta is null)
+        {
+            var hoy = DateTime.Today;
+            desde = hoy;
+            hasta = hoy;
+        }
+
+        var registros = await _repo.ListarAsync(desde, hasta, turnoId, ct);
+        return registros.Select(r => r.ToDto()).ToList();
+    }
+        
 
     public async Task<AsistenciaInsertResponseDto> InsertarAsync(AsistenciaInsertRequest req, CancellationToken ct)
     {

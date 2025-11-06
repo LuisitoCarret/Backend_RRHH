@@ -8,3 +8,4 @@ global using Modulo.Empleados.Domain.Filter;
 global using Modulo.Seguridad.Domain.Entities;
 global using Modulo.Seguridad.Domain.Interfaces;
 global using System.Text.Json.Serialization;
+global using Modulo.Empleados.Application.Interface;

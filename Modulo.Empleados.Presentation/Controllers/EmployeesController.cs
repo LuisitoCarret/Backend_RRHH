@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-
-namespace Modulo.Empleados.Presentation.Controllers
+﻿namespace Modulo.Empleados.Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -9,11 +7,13 @@ namespace Modulo.Empleados.Presentation.Controllers
     {
         private readonly EmpleadoService _empleadoService;
         private readonly EmpleadoQueryService _empleadoQueryService;
+        private readonly CatalogoService _service;
 
-        public EmployeesController(EmpleadoService empleadoService, EmpleadoQueryService empleadoQueryService)
+        public EmployeesController(EmpleadoService empleadoService, EmpleadoQueryService empleadoQueryService, CatalogoService service)
         {
             _empleadoService = empleadoService;
             _empleadoQueryService = empleadoQueryService;
+            _service = service;
         }
 
         [HttpPost]
@@ -89,6 +89,34 @@ namespace Modulo.Empleados.Presentation.Controllers
             if (string.IsNullOrWhiteSpace(val))
                 throw new InvalidOperationException("El JWT no contiene el empleado_id.");
             return int.Parse(val);
+        }
+
+        [HttpGet("areas")]
+        public async Task<IActionResult> GetAreas()
+        {
+            var data = await _service.ObtenerAreas();
+            return Ok(data);
+        }
+
+        [HttpGet("puestos")]
+        public async Task<IActionResult> GetPuestos([FromQuery] long? areaId = null)
+        {
+            var data = await _service.ObtenerPuestos(areaId);
+            return Ok(data);
+        }
+
+        [HttpGet("turnos")]
+        public async Task<IActionResult> GetTurnos()
+        {
+            var data = await _service.ObtenerTurnos();
+            return Ok(data);
+        }
+
+        [HttpGet("estatus")]
+        public async Task<IActionResult> GetEstatus()
+        {
+            var data = await _service.ObtenerEstatus();
+            return Ok(data);
         }
 
     }

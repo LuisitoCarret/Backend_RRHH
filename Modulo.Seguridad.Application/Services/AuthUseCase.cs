@@ -28,7 +28,13 @@
                 return (false, null, LoginFailureReason.InvalidEmail, "Correo no registrado");
 
             if (!string.Equals(user.Estatus, "activo", StringComparison.OrdinalIgnoreCase))
-                return (false, null, LoginFailureReason.Inactive, "Usuario inactivo. Contacte al administrador");
+            {
+                string mensajeError = user.Estatus.Equals("suspendido", StringComparison.OrdinalIgnoreCase)
+                    ? "Tu cuenta está suspendida temporalmente. Contacta al administrador."
+                    : "Tu cuenta está inactiva. Contacta al administrador.";
+
+                return (false, null, LoginFailureReason.Inactive, mensajeError);
+            }
 
             bool passOk = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
             if (!passOk)
