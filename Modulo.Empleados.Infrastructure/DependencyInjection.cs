@@ -10,6 +10,9 @@
             services.AddScoped<IEmpleadoRepository, EmpleadoRepository>();
             services.AddScoped<IEmpleadoStoredRepository, EmpleadoStoredRepository>();
             services.AddScoped<EmpleadoQueryService>();
+            services.AddScoped<ICatalogoRepository, CatalogoRepository>();
+            services.AddScoped<CatalogoService>();
+
 
             return services;
         }

@@ -7,3 +7,4 @@ global using Microsoft.AspNetCore.Mvc;
 global using Modulo.Empleados.Application.Contracts;
 global using Modulo.Empleados.Application.Dto;
 global using Modulo.Empleados.Application.Mapping;
+global using System.Security.Claims;

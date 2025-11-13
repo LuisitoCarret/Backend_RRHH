@@ -9,3 +9,5 @@ global using Modulo.Empleados.Domain.Filter;
 global using Microsoft.Data.SqlClient;
 global using System.Data;
 global using Modulo.Empleados.Application.Services;
+global using Dapper;
+global using Modulo.Empleados.Application.Interface;

@@ -18,7 +18,10 @@
 
             modelBuilder.Entity<Empleado>(entity =>
             {
-                entity.ToTable("empleados");
+                entity.ToTable("empleados", "empleados", tb =>
+                {
+                    tb.HasTrigger("trg_empleado_estatus_usuario"); 
+                });
 
                 entity.Property(e => e.Id).HasColumnName("id");
                 entity.Property(e => e.Nombre).HasColumnName("nombre");

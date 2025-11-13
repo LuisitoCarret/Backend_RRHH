@@ -3,17 +3,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Controllers de presentacion
 builder.Services.AddControllers()
     .AddApplicationPart(Assembly.Load("Modulo.Empleados.Presentation"))
-    .AddApplicationPart(Assembly.Load("Modulo.Seguridad.Presentation"));
+    .AddApplicationPart(Assembly.Load("Modulo.Seguridad.Presentation"))
+    .AddApplicationPart(Assembly.Load("Modulo.Contratos.Presentation"))
+    .AddApplicationPart(Assembly.Load("Modulo.Asistencias.Presentation"));
 
 builder.Services.AddValidatorsFromAssemblyContaining<CreateEmpleadoValidator>();
-
+builder.Services.AddValidatorsFromAssemblyContaining<CreateContractValidator>();
 builder.Services
     .AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddHttpContextAccessor();
 
 // ====== C O R S  (lee Cors:* de appsettings.json) ======
 builder.Services.AddCorsPolicies(builder.Configuration);
@@ -23,6 +25,11 @@ builder.Services.AddSeguridadModule(builder.Configuration);
 
 //Empleados
 builder.Services.AddEmpleadosModule(builder.Configuration);
+
+//Contratos
+builder.Services.AddContratosModule(builder.Configuration);
+//Asistencias
+builder.Services.AddAsistenciasModule(builder.Configuration);
 
 var key = builder.Configuration["Jwt:Key"] ?? throw new Exception("Jwt:Key missing");
 var issuer = builder.Configuration["Jwt:Issuer"];
