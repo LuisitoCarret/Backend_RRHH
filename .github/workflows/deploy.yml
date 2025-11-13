@@ -3,10 +3,8 @@ name: Deploy to Somee (Gateway con app_offline)
 on:
   push:
     branches: 
-      - sprint5
-      - sprint5_cristian
       - develop
-      - sprint5_luis
+      - sprint7_cristian
 concurrency:
   group: somee-deploy
   cancel-in-progress: true
