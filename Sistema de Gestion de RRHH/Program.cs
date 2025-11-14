@@ -7,6 +7,8 @@ builder.Services.AddControllers()
     .AddApplicationPart(Assembly.Load("Modulo.Contratos.Presentation"))
     .AddApplicationPart(Assembly.Load("Modulo.Asistencias.Presentation"))
     .AddApplicationPart(Assembly.Load("Modulo.Evaluaciones.Presentation"));
+    .AddApplicationPart(Assembly.Load("Modulo.Reclutamiento.Presentation"));
+
 
 builder.Services.AddValidatorsFromAssemblyContaining<CreateEmpleadoValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateContractValidator>();
@@ -31,6 +33,8 @@ builder.Services.AddEmpleadosModule(builder.Configuration);
 builder.Services.AddContratosModule(builder.Configuration);
 //Asistencias
 builder.Services.AddAsistenciasModule(builder.Configuration);
+//Reclutamiento
+builder.Services.AddReclutamientoModule(builder.Configuration);
 
 builder.Services.AddEvaluacionesModule(builder.Configuration);
 
@@ -79,7 +83,7 @@ app.UseAuthorization();
 // Endpoints
 app.MapControllers();
 
-//  Endpoint mínimo para validar el pipeline
+//  Endpoint mÃ­nimo para validar el pipeline
 app.MapGet("/prueba", () => Results.Ok("Hola"));
 
 app.Run();
