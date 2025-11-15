@@ -11,6 +11,9 @@
             services.AddSingleton(new SqlOptions(cs));
 
             services.AddScoped<IEvaluacionesRepository, EvaluacionesRepository>();
+            services.AddScoped<IndicadoresCatalogoService>();
+            services.AddScoped<PlantillasQueryService>();
+            services.AddScoped<PlantillasCommandService>();
             services.AddScoped<CrearEvaluacionService>();
             services.AddScoped<ActualizarEvaluacionService>();
             services.AddScoped<ListarEvaluacionesService>();
@@ -21,5 +24,5 @@
         }
     }
 
-    public sealed record SqlOptions(string ConnectionString);
+  
 }
