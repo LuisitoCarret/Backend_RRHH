@@ -12,5 +12,6 @@ global using Modulo.Contratos.Infrastructure;   // ← nuevo
 global using Modulo.Contratos.Application.Validators; // ← para registrar validadores
 global using Modulo.Asistencias.Presentation;
 global using Modulo.Asistencias.Infrastructure;
+global using Modulo.Evaluaciones.Infrastructure;
 global using Modulo.Reclutamiento.Presentation;
 global using Modulo.Reclutamiento.Infrastructure;

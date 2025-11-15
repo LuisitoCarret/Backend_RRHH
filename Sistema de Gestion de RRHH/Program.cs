@@ -6,6 +6,7 @@ builder.Services.AddControllers()
     .AddApplicationPart(Assembly.Load("Modulo.Seguridad.Presentation"))
     .AddApplicationPart(Assembly.Load("Modulo.Contratos.Presentation"))
     .AddApplicationPart(Assembly.Load("Modulo.Asistencias.Presentation"))
+    .AddApplicationPart(Assembly.Load("Modulo.Evaluaciones.Presentation"));
     .AddApplicationPart(Assembly.Load("Modulo.Reclutamiento.Presentation"));
 
 
@@ -34,6 +35,8 @@ builder.Services.AddContratosModule(builder.Configuration);
 builder.Services.AddAsistenciasModule(builder.Configuration);
 //Reclutamiento
 builder.Services.AddReclutamientoModule(builder.Configuration);
+
+builder.Services.AddEvaluacionesModule(builder.Configuration);
 
 var key = builder.Configuration["Jwt:Key"] ?? throw new Exception("Jwt:Key missing");
 var issuer = builder.Configuration["Jwt:Issuer"];
@@ -80,7 +83,7 @@ app.UseAuthorization();
 // Endpoints
 app.MapControllers();
 
-//  Endpoint mínimo para validar el pipeline
+//  Endpoint mÃ­nimo para validar el pipeline
 app.MapGet("/prueba", () => Results.Ok("Hola"));
 
 app.Run();
