@@ -355,4 +355,43 @@ public sealed class EvaluacionesRepository : IEvaluacionesRepository
 
             return result;
         });
+
+    public async Task<IEnumerable<EmpleadoDisponibleResult>> ObtenerEmpleadosDisponiblesAsync(int plantillaId)
+    => await SqlGuard.Exec(async () =>
+    {
+        var result = new List<EmpleadoDisponibleResult>();
+
+        using var connection = NewConn();
+        using var command = new SqlCommand("evaluaciones.sp_empleados_disponibles", connection)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
+
+        command.Parameters.AddWithValue("@plantilla_id", plantillaId);
+
+        await connection.OpenAsync();
+        using var reader = await command.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync())
+        {
+            // 🚨 Si el SP regresó un mensaje de error
+            if (reader.FieldCount == 2 &&
+                reader.GetName(0) == "estatus" &&
+                reader.GetName(1) == "mensaje")
+            {
+                throw new Exception(reader["mensaje"].ToString());
+            }
+
+            // ✔ Lectura normal
+            result.Add(new EmpleadoDisponibleResult
+            {
+                EmpleadoId = Convert.ToInt32(reader["empleado_id"]),
+                Nombre = reader["nombre"].ToString()!,
+                AreaId = Convert.ToInt32(reader["area_id"]),
+                NombreArea = reader["nombre_area"].ToString()!
+            });
+        }
+
+        return result;
+    });
 }

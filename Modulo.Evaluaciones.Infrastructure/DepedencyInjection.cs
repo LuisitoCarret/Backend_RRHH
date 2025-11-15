@@ -19,6 +19,7 @@
             services.AddScoped<ListarEvaluacionesService>();
             services.AddScoped<ObtenerDetalleEvaluacionService>();
             services.AddScoped<ObtenerMisEvaluacionesService>();
+            services.AddScoped<ObtenerEmpleadoDisponibleService>();
 
             return services;
         }

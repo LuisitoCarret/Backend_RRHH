@@ -19,5 +19,7 @@ namespace Modulo.Evaluaciones.Domain.Interfaces
         Task<IEnumerable<ListarEvaluacionResult>> ListarEvaluacionesAsync(int? areaId, string? estatus);
         Task<DetalleEvaluacionResult?> ObtenerDetalleEvaluacionAsync(int evaluacionId);
         Task<IEnumerable<ListarEvaluacionResult>> ListarPorEmpleadoAsync(int empleadoId);
+
+        Task<IEnumerable<EmpleadoDisponibleResult>> ObtenerEmpleadosDisponiblesAsync(int plantillaId);
     }
 }
