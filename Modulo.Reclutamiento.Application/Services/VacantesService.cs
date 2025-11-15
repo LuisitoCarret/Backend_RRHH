@@ -1,17 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-// ==========================
-// Modulo.Reclutamiento.Application/Services/VacantesService.cs
-// ==========================
-using Modulo.Reclutamiento.Domain;
-using Modulo.Reclutamiento.Domain.Interfaces;
-using Modulo.Reclutamiento.Application.Contracts;
-
-namespace Modulo.Reclutamiento.Application.Services;
+﻿namespace Modulo.Reclutamiento.Application.Services;
 
 public sealed class VacantesService
 {
@@ -66,4 +53,63 @@ public sealed class VacantesService
             }).ToList()
         };
     }
+
+    public async Task<VacanteDetailDto> GetDetalleAsync(int vacanteId, CancellationToken ct)
+    {
+        if (vacanteId <= 0)
+            throw new BusinessRuleException("La vacante solicitada no existe.");
+
+        var detail = await _repo.GetDetalleAsync(vacanteId, ct);
+
+        if (detail is null)
+            throw new BusinessRuleException("La vacante no existe.");
+
+        return new VacanteDetailDto
+        {
+            VacanteId = detail.VacanteId,
+            Titulo = detail.Titulo,
+            Descripcion = detail.Descripcion,
+            AreaId = detail.AreaId,
+            NombreArea = detail.NombreArea,
+            PuestoId = detail.PuestoId,
+            NombrePuesto = detail.NombrePuesto,
+            Estatus = detail.Estatus,
+            FechaPublicacion = detail.FechaPublicacion,
+            FechaCierre = detail.FechaCierre
+        };
+    }
+
+    public async Task<VacanteDetailDto> UpdateAsync(int vacanteId, UpdateVacanteRequest req, CancellationToken ct)
+    {
+        if (vacanteId <= 0)
+            throw new BusinessRuleException("No se pudo actualizar la vacante.");
+
+        var updated = await _repo.UpdateAsync(new VacanteUpdate
+        {
+            VacanteId = vacanteId,
+            Titulo = req.Titulo,
+            Descripcion = req.Descripcion,
+            AreaId = req.AreaId,
+            PuestoId = req.PuestoId
+
+        }, ct);
+
+        if (updated is null)
+            throw new BusinessRuleException("No se pudo actualizar la vacante.");
+
+        return new VacanteDetailDto
+        {
+            VacanteId = updated.VacanteId,
+            Titulo = updated.Titulo,
+            Descripcion = updated.Descripcion,
+            AreaId = updated.AreaId,
+            NombreArea = updated.NombreArea,
+            PuestoId = updated.PuestoId,
+            NombrePuesto = updated.NombrePuesto,
+            Estatus = updated.Estatus,
+            FechaPublicacion = updated.FechaPublicacion,
+            FechaCierre = updated.FechaCierre
+        };
+    }
+
 }

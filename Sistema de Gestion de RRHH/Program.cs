@@ -6,7 +6,7 @@ builder.Services.AddControllers()
     .AddApplicationPart(Assembly.Load("Modulo.Seguridad.Presentation"))
     .AddApplicationPart(Assembly.Load("Modulo.Contratos.Presentation"))
     .AddApplicationPart(Assembly.Load("Modulo.Asistencias.Presentation"))
-    .AddApplicationPart(Assembly.Load("Modulo.Evaluaciones.Presentation"));
+    .AddApplicationPart(Assembly.Load("Modulo.Evaluaciones.Presentation"))
     .AddApplicationPart(Assembly.Load("Modulo.Reclutamiento.Presentation"));
 
 

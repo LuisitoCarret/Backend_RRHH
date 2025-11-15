@@ -1,11 +1,6 @@
 ﻿// ==========================
 // Modulo.Reclutamiento.Infrastructure/DependencyInjection.cs
 // ==========================
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Modulo.Reclutamiento.Domain.Interfaces;
-using Modulo.Reclutamiento.Infrastructure.Persistence;
-
 namespace Modulo.Reclutamiento.Infrastructure;
 
 public static class DependencyInjection
@@ -20,6 +15,14 @@ public static class DependencyInjection
         services.AddSingleton(new SqlOptions(cs));
         services.AddScoped<IVacanteRepository, VacanteRepository>();
         services.AddScoped<Modulo.Reclutamiento.Application.Services.VacantesService>();
+        services.AddScoped<IPostulacionRepository, PostulacionRepository>();
+        services.AddScoped<PostulacionesService>();
+        services.Configure<CloudinaryOptions>(
+            cfg.GetSection("Cloudinary")
+        );
+
+        // Cloudinary Service
+        services.AddScoped<ICloudinaryService, CloudinaryService>();
         return services;
     }
 }
