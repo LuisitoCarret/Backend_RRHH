@@ -246,5 +246,4 @@ public sealed class VacantesController : ControllerBase
             });
         }
     }
-
 }

@@ -11,19 +11,22 @@ namespace Modulo.Evaluaciones.Presentation.Controllers
         private readonly ListarEvaluacionesService _listar;
         private readonly ObtenerDetalleEvaluacionService _detalle;
         private readonly ObtenerMisEvaluacionesService _misEvaluaciones;
+        private readonly ObtenerEmpleadoDisponibleService _empleadoDisponible;
 
         public EvaluacionesController(
             CrearEvaluacionService crear,
             ActualizarEvaluacionService actualizar,
             ListarEvaluacionesService listar,
             ObtenerDetalleEvaluacionService detalle,
-            ObtenerMisEvaluacionesService misEvaluaciones)
+            ObtenerMisEvaluacionesService misEvaluaciones,
+            ObtenerEmpleadoDisponibleService empleadoDisponible)
         {
             _crear = crear;
             _actualizar = actualizar;
             _listar = listar;
             _detalle = detalle;
             _misEvaluaciones = misEvaluaciones;
+            _empleadoDisponible = empleadoDisponible;
         }
 
         [HttpPost]
@@ -79,6 +82,14 @@ namespace Modulo.Evaluaciones.Presentation.Controllers
         {
             var value = User.FindFirst("empleado_id")?.Value;
             return int.TryParse(value, out var id) ? id : null;
+        }
+
+        [HttpGet("empleados-disponibles")]
+        [Authorize(Roles = "admin,evaluador")]
+        public async Task<IActionResult> EmpleadosDisponibles([FromQuery] int plantilla_id)
+        {
+            var result = await _empleadoDisponible.HandleAsync(plantilla_id);
+            return Ok(result);
         }
     }
 }
