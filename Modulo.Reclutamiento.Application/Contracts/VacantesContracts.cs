@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-// ==========================
-// Modulo.Reclutamiento.Application/Contracts/VacantesContracts.cs
-// ==========================
-namespace Modulo.Reclutamiento.Application.Contracts;
+﻿namespace Modulo.Reclutamiento.Application.Contracts;
 
 public sealed class CreateVacanteRequest
 {

@@ -1,12 +1,4 @@
-﻿// ==========================
-// Modulo.Reclutamiento.Infrastructure/Common/SqlGuard.cs
-// ==========================
-using System;
-using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
-using Modulo.Reclutamiento.Application.Common;
-
-namespace Modulo.Reclutamiento.Infrastructure.Common;
+﻿namespace Modulo.Reclutamiento.Infrastructure.Common;
 
 public static class SqlGuard
 {

@@ -1,11 +1,4 @@
-﻿// ==========================
-// Modulo.Reclutamiento.Infrastructure/Persistence/VacanteRepository.cs
-// ==========================
-using Microsoft.Data.SqlClient;
-using System.Data;
-using Modulo.Reclutamiento.Domain;
-using Modulo.Reclutamiento.Domain.Interfaces;
-using Modulo.Reclutamiento.Infrastructure.Common;
+﻿using Modulo.Reclutamiento.Domain.Entities;
 
 namespace Modulo.Reclutamiento.Infrastructure.Persistence;
 
@@ -98,6 +91,74 @@ public sealed class VacanteRepository : IVacanteRepository
             }
 
             return response;
+        });
+    }
+
+    public async Task<VacanteDetail?> GetDetalleAsync(int vacanteId, CancellationToken ct)
+    {
+        return await SqlGuard.Exec(async () =>
+        {
+            using var cn = NewConn();
+            using var cmd = new SqlCommand("reclutamiento.sp_vacante_detalle", cn)
+            { CommandType = CommandType.StoredProcedure };
+
+            cmd.Parameters.AddWithValue("@vacante_id", vacanteId);
+
+            await cn.OpenAsync(ct);
+            using var rd = await cmd.ExecuteReaderAsync(ct);
+
+            if (!await rd.ReadAsync(ct))
+                return null;
+
+            return new VacanteDetail
+            {
+                VacanteId = rd.GetInt32(rd.GetOrdinal("vacanteId")),
+                Titulo = rd.GetString(rd.GetOrdinal("titulo")),
+                Descripcion = rd.IsDBNull(rd.GetOrdinal("descripcion")) ? null : rd.GetString(rd.GetOrdinal("descripcion")),
+                AreaId = rd.GetInt32(rd.GetOrdinal("areaId")),
+                NombreArea = rd.GetString(rd.GetOrdinal("nombreArea")),
+                PuestoId = rd.GetInt32(rd.GetOrdinal("puestoId")),
+                NombrePuesto = rd.GetString(rd.GetOrdinal("nombrePuesto")),
+                Estatus = rd.GetString(rd.GetOrdinal("estatus")),
+                FechaPublicacion = rd.GetDateTime(rd.GetOrdinal("fechaPublicacion")),
+                FechaCierre = rd.IsDBNull(rd.GetOrdinal("fechaCierre")) ? null : rd.GetDateTime(rd.GetOrdinal("fechaCierre"))
+            };
+        });
+    }
+
+    public async Task<VacanteDetail?> UpdateAsync(VacanteUpdate data, CancellationToken ct)
+    {
+        return await SqlGuard.Exec(async () =>
+        {
+            using var cn = NewConn();
+            using var cmd = new SqlCommand("reclutamiento.sp_vacante_actualizar", cn)
+            { CommandType = CommandType.StoredProcedure };
+
+            cmd.Parameters.AddWithValue("@vacante_id", data.VacanteId);
+            cmd.Parameters.AddWithValue("@titulo", (object?)data.Titulo ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@descripcion", (object?)data.Descripcion ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@area_id", (object?)data.AreaId ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@puesto_id", (object?)data.PuestoId ?? DBNull.Value);
+
+            await cn.OpenAsync(ct);
+            using var rd = await cmd.ExecuteReaderAsync(ct);
+
+            if (!await rd.ReadAsync(ct))
+                return null;
+
+            return new VacanteDetail
+            {
+                VacanteId = rd.GetInt32(rd.GetOrdinal("vacanteId")),
+                Titulo = rd.GetString(rd.GetOrdinal("titulo")),
+                Descripcion = rd.IsDBNull(rd.GetOrdinal("descripcion")) ? null : rd.GetString(rd.GetOrdinal("descripcion")),
+                AreaId = rd.GetInt32(rd.GetOrdinal("areaId")),
+                NombreArea = rd.GetString(rd.GetOrdinal("nombreArea")),
+                PuestoId = rd.GetInt32(rd.GetOrdinal("puestoId")),
+                NombrePuesto = rd.GetString(rd.GetOrdinal("nombrePuesto")),
+                Estatus = rd.GetString(rd.GetOrdinal("estatus")),
+                FechaPublicacion = rd.GetDateTime(rd.GetOrdinal("fechaPublicacion")),
+                FechaCierre = rd.IsDBNull(rd.GetOrdinal("fechaCierre")) ? null : rd.GetDateTime(rd.GetOrdinal("fechaCierre"))
+            };
         });
     }
 }

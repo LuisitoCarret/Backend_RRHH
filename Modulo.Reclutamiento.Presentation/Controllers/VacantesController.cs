@@ -1,15 +1,6 @@
 ﻿// ==========================
 // Modulo.Reclutamiento.Presentation/Controllers/VacantesController.cs
 // ==========================
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Modulo.Reclutamiento.Application.Common;
-using Modulo.Reclutamiento.Application.Contracts;
-using Modulo.Reclutamiento.Application.Services;
-using System.Runtime.InteropServices;
-
 namespace Modulo.Reclutamiento.Presentation.Controllers;
 
 [ApiController]
@@ -18,7 +9,12 @@ namespace Modulo.Reclutamiento.Presentation.Controllers;
 public sealed class VacantesController : ControllerBase
 {
     private readonly VacantesService _svc;
-    public VacantesController(VacantesService svc) => _svc = svc;
+    private readonly PostulacionesService _service;
+    public VacantesController(VacantesService svc, PostulacionesService service)
+    {
+        _svc = svc;
+        _service = service; 
+    }
 
     [HttpPost]
     [Authorize(Roles = "admin,reclutador")]
@@ -106,4 +102,149 @@ public sealed class VacantesController : ControllerBase
             });
         }
     }
+
+    [HttpGet("{id:int}")]
+    [Authorize(Roles = "admin,reclutador")]
+    public async Task<IActionResult> GetDetalle(int id, CancellationToken ct)
+    {
+        try
+        {
+            var result = await _svc.GetDetalleAsync(id, ct);
+            return Ok(result);
+        }
+        catch (BusinessRuleException ex)
+        {
+            return BadRequest(new
+            {
+                success = false,
+                message = ex.Message
+            });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new
+            {
+                success = false,
+                message = "Ocurrió un error al obtener la información de la vacante."
+            });
+        }
+    }
+
+    [HttpPut("{id:int}")]
+    [Authorize(Roles = "admin,reclutador")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateVacanteRequest req, CancellationToken ct)
+    {
+        try
+        {
+            var result = await _svc.UpdateAsync(id, req, ct);
+            return Ok(result);
+        }
+        catch (BusinessRuleException ex)
+        {
+            return BadRequest(new
+            {
+                success = false,
+                message = ex.Message
+            });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new
+            {
+                success = false,
+                message = "Ocurrió un error al actualizar la vacante."
+            });
+        }
+    }
+
+    [HttpPost("postulaciones")]
+    [Authorize(Roles = "admin,reclutador")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> CreatePostulacion([FromForm] CreatePostulacionRequest req, CancellationToken ct)
+    {
+        try
+        {
+            var result = await _service.CreateAsync(req, ct);
+            return Ok(result);
+        }
+        catch (BusinessRuleException ex)
+        {
+            return BadRequest(new { success = false, message = ex.Message });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { success = false, message = "Ocurrió un error al registrar la postulación." });
+        }
+    }
+
+    [HttpGet("postulaciones")]
+    [Authorize(Roles = "admin,reclutador")]
+    public async Task<IActionResult> List(
+     [FromQuery] string? vacanteNombre,
+     [FromQuery] string? estatus,
+     [FromQuery] int page = 1,
+     [FromQuery] int pageSize = 10,
+     CancellationToken ct = default)
+    {
+        try
+        {
+            var result = await _service.ListAsync(vacanteNombre, estatus, page, pageSize, ct);
+            return Ok(result);
+        }
+        catch
+        {
+            return StatusCode(500, new
+            {
+                success = false,
+                message = "Ocurrió un error al listar las postulaciones."
+            });
+        }
+    }
+
+    [HttpGet("postulaciones/{id:int}")]
+    [Authorize(Roles = "admin,reclutador")]
+    public async Task<IActionResult> GetDetallePostulaciones(int id, CancellationToken ct)
+    {
+        try
+        {
+            var result = await _service.GetDetalleAsync(id, ct);
+            return Ok(result);
+        }
+        catch (BusinessRuleException ex)
+        {
+            return BadRequest(new { success = false, message = ex.Message });
+        }
+        catch
+        {
+            return StatusCode(500, new
+            {
+                success = false,
+                message = "Ocurrió un error al obtener la información de la postulación."
+            });
+        }
+    }
+
+    [HttpPut("postulaciones/{id:int}")]
+    [Authorize(Roles = "admin,reclutador")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdatePostulacionRequest req, CancellationToken ct)
+    {
+        try
+        {
+            var result = await _service.UpdateAsync(id, req, ct);
+            return Ok(result);
+        }
+        catch (BusinessRuleException ex)
+        {
+            return BadRequest(new { success = false, message = ex.Message });
+        }
+        catch
+        {
+            return StatusCode(500, new
+            {
+                success = false,
+                message = "Ocurrió un error al actualizar la postulación."
+            });
+        }
+    }
+
 }

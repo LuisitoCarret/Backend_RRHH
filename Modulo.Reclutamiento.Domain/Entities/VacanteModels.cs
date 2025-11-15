@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-// ==========================
-// Modulo.Reclutamiento.Domain/Entities/VacanteModels.cs
-// ==========================
-namespace Modulo.Reclutamiento.Domain;
+﻿namespace Modulo.Reclutamiento.Domain;
 
 public sealed class VacanteCreate
 {

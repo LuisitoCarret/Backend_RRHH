@@ -1,0 +1,12 @@
+﻿global using Microsoft.Data.SqlClient;
+global using System.Data;
+global using Modulo.Reclutamiento.Domain;
+global using Modulo.Reclutamiento.Domain.Interfaces;
+global using Modulo.Reclutamiento.Infrastructure.Common;
+global using Modulo.Reclutamiento.Domain.Entities;
+global using Microsoft.Extensions.Options;
+global using Modulo.Reclutamiento.Infrastructure.Options;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Modulo.Reclutamiento.Application.Services;
+global using Modulo.Reclutamiento.Infrastructure.Persistence;
