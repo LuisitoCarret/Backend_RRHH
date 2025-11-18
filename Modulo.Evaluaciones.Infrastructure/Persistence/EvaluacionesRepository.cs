@@ -117,7 +117,7 @@ public sealed class EvaluacionesRepository : IEvaluacionesRepository
             return d;
         });
 
-    public async Task<(int plantillaId, string mensaje)> CrearPlantillaAsync( string nombre, string? descripcion, int areaId, DateTime periodoInicio, DateTime periodoFin, string indicadoresJson, CancellationToken ct)
+    public async Task<(int plantillaId, string mensaje)> CrearPlantillaAsync(string nombre, string? descripcion, int areaId, DateTime periodoInicio, DateTime periodoFin, string indicadoresJson, CancellationToken ct)
         => await SqlGuard.Exec(async () =>
         {
             using var cn = NewConn();
@@ -312,6 +312,9 @@ public sealed class EvaluacionesRepository : IEvaluacionesRepository
             {
                 detalleList.Add(new DetalleIndicadorItem
                 {
+                    IndicadorId = reader["indicador_id"] != DBNull.Value
+                     ? Convert.ToInt32(reader["indicador_id"])
+                     : 0,   
                     Indicador = reader["indicador"].ToString()!,
                     Ponderacion = Convert.ToDecimal(reader["ponderacion"]),
                     Calificacion = reader["calificacion"] as decimal?
