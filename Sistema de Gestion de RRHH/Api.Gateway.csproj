@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Sistema_de_Gestion_de_RRHH</RootNamespace>
 	<AssemblyName>Api.Gateway</AssemblyName>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <NoWarn>$(NoWarn);1591</NoWarn>
 
   </PropertyGroup>
 

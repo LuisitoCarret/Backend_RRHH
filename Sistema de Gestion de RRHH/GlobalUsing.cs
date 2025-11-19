@@ -15,3 +15,4 @@ global using Modulo.Asistencias.Infrastructure;
 global using Modulo.Evaluaciones.Infrastructure;
 global using Modulo.Reclutamiento.Presentation;
 global using Modulo.Reclutamiento.Infrastructure;
+global using Microsoft.OpenApi.Models;
