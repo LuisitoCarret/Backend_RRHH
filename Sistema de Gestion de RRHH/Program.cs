@@ -1,4 +1,12 @@
-
+using System.Reflection;
+using System.Text;
+using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Sistema_de_Gestion_de_RRHH.Configuration;
+using Modulo.Empleados.Application.Validators;
+using Modulo.Contratos.Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +22,7 @@ builder.Services.AddControllers()
     .AddApplicationPart(Assembly.Load("Modulo.Evaluaciones.Presentation"));
 
 // =======================================================================
-//  VALIDATORS
+//  VALIDATORS (FluentValidation)
 // =======================================================================
 builder.Services.AddValidatorsFromAssemblyContaining<CreateEmpleadoValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateContractValidator>();
@@ -49,7 +57,11 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.Http,
         Scheme = "bearer",
         BearerFormat = "JWT",
-        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+        Reference = new OpenApiReference
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id = "Bearer"
+        }
     };
 
     c.AddSecurityDefinition("Bearer", securityScheme);
@@ -63,6 +75,7 @@ builder.Services.AddSwaggerGen(c =>
 
     string[] xmlFiles =
     {
+        // OJO: este nombre debe coincidir con <AssemblyName> del Api.Gateway
         "Api.Gateway.xml",
         "Modulo.Seguridad.Presentation.xml",
         "Modulo.Empleados.Presentation.xml",
@@ -76,7 +89,9 @@ builder.Services.AddSwaggerGen(c =>
     {
         var xmlPath = Path.Combine(basePath, xml);
         if (File.Exists(xmlPath))
+        {
             c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+        }
     }
 });
 
@@ -127,13 +142,14 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // =======================================================================
-//  SWAGGER — SIEMPRE ACTIVADO EN PRODUCCIÓN
+//  SWAGGER — SIEMPRE ACTIVADO (INCLUYE PRODUCCIÓN)
 // =======================================================================
 app.UseSwagger();
+
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "RHPlus API Gateway v1");
-    c.RoutePrefix = "swagger";
+    c.RoutePrefix = "swagger"; // URL final: /swagger
 });
 
 // =======================================================================
@@ -143,14 +159,15 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
-app.UseDefaultCors();  // CORS antes de autenticación
+// CORS antes de autenticación/autorización
+app.UseDefaultCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-// Endpoint de prueba
+// Endpoint de prueba rápido
 app.MapGet("/prueba", () => Results.Ok("Hola RHPlus!"));
 
 app.Run();
