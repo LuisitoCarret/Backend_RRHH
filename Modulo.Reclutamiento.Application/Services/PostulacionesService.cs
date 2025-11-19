@@ -96,6 +96,7 @@
                 PostulacionId = data.PostulacionId,
                 VacanteId = data.VacanteId,
                 NombreVacante = data.NombreVacante,
+                VacanteEstatus = data.VacanteEstatus,
                 NombreContacto = data.NombreContacto,
                 EmailContacto = data.EmailContacto,
                 TelefonoContacto = data.TelefonoContacto,

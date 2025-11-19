@@ -61,9 +61,13 @@
                 Email = rd.GetString(rd.GetOrdinal("correo")),
                 Telefono = rd.GetString(rd.GetOrdinal("telefono")),
                 FechaIngreso = DateOnly.Parse(rd.GetString(rd.GetOrdinal("fechaIngreso"))),
+                AreaId = rd.GetInt32(rd.GetOrdinal("areaId")),
                 Area = new Area { Nombre = rd.GetString(rd.GetOrdinal("area")) },
+                PuestoId = rd.GetInt32(rd.GetOrdinal("puestoId")),
                 Puesto = new Puesto { Nombre = rd.GetString(rd.GetOrdinal("puesto")) },
+                TurnoId = rd.GetInt32(rd.GetOrdinal("turnoId")),
                 Turno = new Turno { Nombre = rd.GetString(rd.GetOrdinal("turno")) },
+                EstatusId = rd.GetInt32(rd.GetOrdinal("estatusId")),
                 Estatus = new EstatusEmpleado { Nombre = rd.GetString(rd.GetOrdinal("estatus")) },
                 Domicilio = rd.IsDBNull(rd.GetOrdinal("calle")) ? null : new DomicilioEmpleado
                 {

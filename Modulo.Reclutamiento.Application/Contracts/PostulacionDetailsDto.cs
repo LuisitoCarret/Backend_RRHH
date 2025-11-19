@@ -5,6 +5,7 @@
         public int PostulacionId { get; set; }
         public int VacanteId { get; set; }
         public string NombreVacante { get; set; } = default!;
+        public string VacanteEstatus { get; set; } = default!;
         public string NombreContacto { get; set; } = default!;
         public string? EmailContacto { get; set; }
         public string? TelefonoContacto { get; set; }
