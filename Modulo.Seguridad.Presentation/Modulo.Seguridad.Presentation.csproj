@@ -12,8 +12,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Modulo.Seguridad.Application\Modulo.Seguridad.Application.csproj" />
 		<ProjectReference Include="..\Modulo.Seguridad.Infrastructure\Modulo.Seguridad.Infrastructure.csproj" />
-		<None Include="$(OutputPath)$(AssemblyName).xml"
-	  CopyToOutputDirectory="Always"
-	  Pack="true" />
+
 	</ItemGroup>
 </Project>
