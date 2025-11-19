@@ -3,10 +3,9 @@ name: Deploy to Somee (Gateway con app_offline)
 on:
   push:
     branches: 
-      - sprint5
-      - sprint5_cristian
       - develop
-      - sprint5_luis
+      - sprint7_cristian
+      - sprint7
 concurrency:
   group: somee-deploy
   cancel-in-progress: true
@@ -87,7 +86,7 @@ jobs:
           -p:PublishReadyToRun=false
           -p:DebugType=None
           -p:DebugSymbols=false
-          -p:GenerateDocumentationFile=false
+          -p:GenerateDocumentationFile=true
 
       # ---------- Generar/adjuntar web.config (dinámico) ----------
       - name: web.config para Gateway (dinámico con DLL detectada)

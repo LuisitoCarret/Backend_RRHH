@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Sistema_de_Gestion_de_RRHH</RootNamespace>
 	<AssemblyName>Api.Gateway</AssemblyName>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <NoWarn>$(NoWarn);1591</NoWarn>
 
   </PropertyGroup>
 
@@ -31,6 +33,8 @@
     <ProjectReference Include="..\Modulo.Asistencia.Presentation\Modulo.Asistencias.Presentation.csproj" />
     <ProjectReference Include="..\Modulo.Contratos.Presentation\Modulo.Contratos.Presentation.csproj" />
     <ProjectReference Include="..\Modulo.Empleados.Presentation\Modulo.Empleados.Presentation.csproj" />
+    <ProjectReference Include="..\Modulo.Evaluaciones.Presentation\Modulo.Evaluaciones.Presentation.csproj" />
+    <ProjectReference Include="..\Modulo.Reclutamiento.Presentation\Modulo.Reclutamiento.Presentation.csproj" />
     <ProjectReference Include="..\Modulo.Seguridad.Presentation\Modulo.Seguridad.Presentation.csproj" />
   </ItemGroup>
 

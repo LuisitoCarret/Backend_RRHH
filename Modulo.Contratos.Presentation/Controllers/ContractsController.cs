@@ -1,4 +1,6 @@
-﻿namespace Modulo.Contratos.Presentation.Controllers;
+﻿
+
+namespace Modulo.Contratos.Presentation.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -22,9 +24,47 @@ public sealed class ContractsController : ControllerBase
         _contractDetails = contractDetails;
     }
 
+    // ========================================================================
+    // POST: Crear contrato
+    // ========================================================================
+
     /// <summary>
-    /// Crea un nuevo contrato (estatus siempre se establece como "Vigente").
+    /// Crea un nuevo contrato para un empleado.
     /// </summary>
+    /// <remarks>
+    /// Este endpoint permite registrar un nuevo contrato para un empleado.
+    /// El estatus siempre se fuerza internamente a <b>"Vigente"</b>.
+    ///
+    /// <h4>Ejemplo de solicitud</h4>
+    /// <code>
+    /// {
+    ///   "empleadoId": 12,
+    ///   "tipoContratoId": 1,
+    ///   "estatusContratoId": 1,
+    ///   "fechaInicio": "2025-01-01",
+    ///   "fechaFin": "2025-06-30",
+    ///   "salarioBase": 15000,
+    ///   "observaciones": "Contrato inicial"
+    /// }
+    /// </code>
+    ///
+    /// <h4>Ejemplo de respuesta (201)</h4>
+    /// <code>
+    /// {
+    ///   "id": 85,
+    ///   "empleadoId": 12,
+    ///   "tipoContratoId": 1,
+    ///   "estatusContratoId": 1,
+    ///   "fechaInicio": "2025-01-01",
+    ///   "fechaFin": "2025-06-30",
+    ///   "salarioBase": 15000,
+    ///   "observaciones": "Contrato inicial"
+    /// }
+    /// </code>
+    /// </remarks>
+    /// <response code="201">Contrato creado exitosamente.</response>
+    /// <response code="400">Error de validación o regla de negocio violada.</response>
+    /// <response code="500">Error interno del servidor.</response>
     [HttpPost]
     [Authorize(Roles = "admin,gestor_empleados")]
     [ProducesResponseType(typeof(ContractDto), StatusCodes.Status201Created)]
@@ -66,10 +106,33 @@ public sealed class ContractsController : ControllerBase
         }
     }
 
+    // ========================================================================
+    // PUT: Actualizar contrato
+    // ========================================================================
+
     /// <summary>
     /// Actualiza los datos de un contrato existente.
-    /// Nota: el empleado asociado no se puede cambiar y el estatus se fuerza a "Vigente".
     /// </summary>
+    /// <remarks>
+    /// Este endpoint permite actualizar campos de un contrato como fechas, salario u observaciones.
+    /// El empleado asociado no se puede cambiar.
+    ///
+    /// <h4>Ejemplo de solicitud</h4>
+    /// <code>
+    /// {
+    ///   "tipoContratoId": 1,
+    ///   "estatusContratoId": 1,
+    ///   "fechaInicio": "2025-01-01",
+    ///   "fechaFin": "2025-12-31",
+    ///   "salarioBase": 18000,
+    ///   "observaciones": "Actualización de salario"
+    /// }
+    /// </code>
+    /// </remarks>
+    /// <response code="200">Contrato actualizado exitosamente.</response>
+    /// <response code="404">Contrato no encontrado.</response>
+    /// <response code="400">Error de validación o regla de negocio violada.</response>
+    /// <response code="500">Error interno del servidor.</response>
     [HttpPut("{id:int}")]
     [Authorize(Roles = "admin,gestor_empleados")]
     [ProducesResponseType(typeof(ContractDto), StatusCodes.Status200OK)]
@@ -80,7 +143,7 @@ public sealed class ContractsController : ControllerBase
     {
         try
         {
-            var updated = await _svc.UpdateAsync(id, 0, req, ct); // empleadoId ya no se usa
+            var updated = await _svc.UpdateAsync(id, 0, req, ct);
             return updated is null ? NotFound() : Ok(updated);
         }
         catch (BusinessRuleException ex)
@@ -112,15 +175,24 @@ public sealed class ContractsController : ControllerBase
         }
     }
 
+    // ========================================================================
+    // DELETE: Eliminar contrato
+    // ========================================================================
+
     /// <summary>
     /// Elimina lógicamente un contrato existente.
     /// </summary>
+    /// <remarks>
+    /// Marca el contrato como eliminado (borrado lógico) sin removerlo físicamente.
+    /// </remarks>
+    /// <response code="204">Contrato eliminado exitosamente.</response>
+    /// <response code="404">Contrato no encontrado.</response>
+    /// <response code="400">Error de negocio o SQL.</response>
+    /// <response code="500">Error interno del servidor.</response>
     [HttpDelete("{id:int}")]
     [Authorize(Roles = "admin,gestor_empleados")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete([FromRoute] int id, CancellationToken ct)
     {
         try
@@ -157,14 +229,19 @@ public sealed class ContractsController : ControllerBase
         }
     }
 
+    // ========================================================================
+    // POST: Renovación de contrato
+    // ========================================================================
+
     /// <summary>
-    /// Crea una renovación de contrato y actualiza su fecha de fin.
+    /// Crea una renovación de contrato para extender su fecha de fin.
     /// </summary>
+    /// <remarks>
+    /// Este endpoint registra un historial de renovación y actualiza la fecha_fin del contrato existente.
+    /// </remarks>
     [HttpPost("{id:int}/renewals")]
     [Authorize(Roles = "admin,gestor_empleados")]
     [ProducesResponseType(typeof(RenewalDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Renew([FromRoute] int id, [FromBody] CreateRenewalRequest req, CancellationToken ct)
     {
         try
@@ -201,6 +278,13 @@ public sealed class ContractsController : ControllerBase
         }
     }
 
+    // ========================================================================
+    // GET: Empleados disponibles para contratos
+    // ========================================================================
+
+    /// <summary>
+    /// Lista empleados que no tienen un contrato vigente.
+    /// </summary>
     [HttpGet("available-employees")]
     [Authorize(Roles = "admin,gestor_empleados")]
     public async Task<IActionResult> GetEmpleadosSinContrato()
@@ -209,6 +293,13 @@ public sealed class ContractsController : ControllerBase
         return Ok(empleados);
     }
 
+    // ========================================================================
+    // GET: Listado general de contratos
+    // ========================================================================
+
+    /// <summary>
+    /// Lista contratos aplicando filtros opcionales.
+    /// </summary>
     [HttpGet]
     [Authorize(Roles = "admin,gestor_empleados")]
     public async Task<IActionResult> GetAll(
@@ -217,10 +308,19 @@ public sealed class ContractsController : ControllerBase
         [FromQuery] int? tipoContratoId = null,
         [FromQuery] int? estatusContratoId = null)
     {
-        var contratos = await _contractService.ListarContratosAsync(fechaInicioDesde, fechaFinHasta, tipoContratoId, estatusContratoId);
+        var contratos = await _contractService.ListarContratosAsync(
+            fechaInicioDesde, fechaFinHasta, tipoContratoId, estatusContratoId);
+
         return Ok(contratos);
     }
 
+    // ========================================================================
+    // GET: Detalle de contrato
+    // ========================================================================
+
+    /// <summary>
+    /// Devuelve la información detallada de un contrato.
+    /// </summary>
     [HttpGet("{id}")]
     [Authorize(Roles = "admin,gestor_empleados")]
     public async Task<IActionResult> GetContratoDetalle(int id)
@@ -232,6 +332,13 @@ public sealed class ContractsController : ControllerBase
         return Ok(contrato);
     }
 
+    // ========================================================================
+    // GET: Tipos de contrato
+    // ========================================================================
+
+    /// <summary>
+    /// Devuelve los tipos de contrato disponibles.
+    /// </summary>
     [HttpGet("types")]
     [Authorize(Roles = "admin,gestor_empleados")]
     public async Task<IActionResult> GetTiposContrato()
@@ -240,6 +347,13 @@ public sealed class ContractsController : ControllerBase
         return Ok(tipos);
     }
 
+    // ========================================================================
+    // GET: Contrato vigente del empleado autenticado
+    // ========================================================================
+
+    /// <summary>
+    /// Devuelve el contrato vigente del usuario autenticado (rol empleado).
+    /// </summary>
     [HttpGet("me")]
     [Authorize(Roles = "empleado")]
     public async Task<IActionResult> GetMyContract()
