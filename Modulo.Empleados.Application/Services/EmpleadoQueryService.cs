@@ -40,9 +40,13 @@ namespace Modulo.Empleados.Application.Services
                 Correo = e.Email,
                 Telefono = e.Telefono,
                 FechaIngreso = e.FechaIngreso.ToString("yyyy-MM-dd"),
+                AreaId = e.AreaId,
                 Area = e.Area?.Nombre ?? "",
+                PuestoId = e.PuestoId,
                 Puesto = e.Puesto?.Nombre ?? "",
+                TurnoId = e.TurnoId,
                 Turno = e.Turno?.Nombre ?? "",
+                EstatusId = e.EstatusId,
                 Estatus = e.Estatus?.Nombre ?? "",
                 Domicilio = e.Domicilio == null ? null : new MeProfileDto.DomicilioDto
                 {
