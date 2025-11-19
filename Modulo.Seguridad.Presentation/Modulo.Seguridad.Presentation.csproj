@@ -4,10 +4,14 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+
+		<!-- Activa la generación de comentarios XML -->
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+
+		<!-- Evitar warnings por comentarios faltantes -->
 		<NoWarn>$(NoWarn);1591</NoWarn>
 	</PropertyGroup>
-
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
@@ -16,6 +20,13 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Modulo.Seguridad.Application\Modulo.Seguridad.Application.csproj" />
 		<ProjectReference Include="..\Modulo.Seguridad.Infrastructure\Modulo.Seguridad.Infrastructure.csproj" />
+	</ItemGroup>
+
+	<!-- 🔥 Esta sección es la clave: fuerza a incluir los XML en la carpeta publicada -->
+	<ItemGroup>
+		<None Include="bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml"
+			  Pack="true"
+			  CopyToOutputDirectory="Always" />
 	</ItemGroup>
 
 </Project>
