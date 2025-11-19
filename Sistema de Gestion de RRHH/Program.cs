@@ -1,6 +1,10 @@
+
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Controllers de presentacion
+// =======================================================================
+//  CONTROLADORES DE MÓDULOS (API Gateway unifica todos los controllers)
+// =======================================================================
 builder.Services.AddControllers()
     .AddApplicationPart(Assembly.Load("Modulo.Empleados.Presentation"))
     .AddApplicationPart(Assembly.Load("Modulo.Seguridad.Presentation"))
@@ -9,28 +13,38 @@ builder.Services.AddControllers()
     .AddApplicationPart(Assembly.Load("Modulo.Evaluaciones.Presentation"))
     .AddApplicationPart(Assembly.Load("Modulo.Reclutamiento.Presentation"));
 
-
+// =======================================================================
+//  VALIDATORS - FluentValidation
+// =======================================================================
 builder.Services.AddValidatorsFromAssemblyContaining<CreateEmpleadoValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateContractValidator>();
+
+// =======================================================================
+//  YARP Reverse Proxy
+// =======================================================================
 builder.Services
     .AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
 builder.Services.AddEndpointsApiExplorer();
+
+// =======================================================================
+//  SWAGGER (incluye autenticación JWT + documentación XML por módulo)
+// =======================================================================
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "RHPlus - API Gateway",
         Version = "v1",
-        Description = "Gateway de módulos Seguridad, Empleados, Contratos, Asistencias, Evaluaciones y Reclutamiento."
+        Description = "Gateway de los módulos Seguridad, Empleados, Contratos, Asistencias, Evaluaciones y Reclutamiento."
     });
 
-    // --- Configuración de JWT en Swagger ---
+    // ---------- JWT SECURITY ----------
     var securityScheme = new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Description = "JWT Bearer. Ejemplo: **Bearer {tu_token_jwt}**",
+        Description = "Autenticación JWT. Usa: **Bearer {tu_token}**",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
         Scheme = "bearer",
@@ -48,35 +62,47 @@ builder.Services.AddSwaggerGen(c =>
         { securityScheme, Array.Empty<string>() }
     });
 
-    // (Opcional) XML comments si los generas en el .csproj
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    if (File.Exists(xmlPath))
+    // ---------- XML DOCUMENTATION ----------
+    var basePath = AppContext.BaseDirectory;
+
+    void AddXml(string project)
     {
-        c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+        var xml = $"{project}.xml";
+        var xmlPath = Path.Combine(basePath, xml);
+        if (File.Exists(xmlPath))
+            c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
     }
+
+    AddXml("ApiGateway"); // tu proyecto principal
+    AddXml("Modulo.Seguridad.Presentation");
+    AddXml("Modulo.Empleados.Presentation");
+    AddXml("Modulo.Contratos.Presentation");
+    AddXml("Modulo.Asistencias.Presentation");
+    AddXml("Modulo.Evaluaciones.Presentation");
+    AddXml("Modulo.Reclutamiento.Presentation");
 });
 
+// Para acceder al HttpContext más tarde
 builder.Services.AddHttpContextAccessor();
 
-// ====== C O R S  (lee Cors:* de appsettings.json) ======
+// =======================================================================
+//  CORS (usa "Cors:*" del appsettings.json)
+// =======================================================================
 builder.Services.AddCorsPolicies(builder.Configuration);
 
-//Seguridad
+// =======================================================================
+//  REGISTRO DE MÓDULOS (Clean Architecture)
+// =======================================================================
 builder.Services.AddSeguridadModule(builder.Configuration);
-
-//Empleados
 builder.Services.AddEmpleadosModule(builder.Configuration);
-
-//Contratos
 builder.Services.AddContratosModule(builder.Configuration);
-//Asistencias
 builder.Services.AddAsistenciasModule(builder.Configuration);
-//Reclutamiento
 builder.Services.AddReclutamientoModule(builder.Configuration);
-//Evaluaciones
 builder.Services.AddEvaluacionesModule(builder.Configuration);
 
+// =======================================================================
+//  AUTENTICACIÓN JWT
+// =======================================================================
 var key = builder.Configuration["Jwt:Key"] ?? throw new Exception("Jwt:Key missing");
 var issuer = builder.Configuration["Jwt:Issuer"];
 var audience = builder.Configuration["Jwt:Audience"];
@@ -103,34 +129,34 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-
-// ====== Swagger ======
-// ====== Swagger (habilitado en todos los entornos, incluido producción) ======
+// =======================================================================
+//  SWAGGER (SIEMPRE ACTIVADO, PRODUCCIÓN INCLUIDA)
+// =======================================================================
 app.UseSwagger();
 
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "RHPlus API Gateway v1");
-    // Ruta /swagger (https://rhplus.somee.com/swagger)
-    c.RoutePrefix = "swagger";
+    c.RoutePrefix = "swagger"; // URL: /swagger
 });
 
-
-// ====== Pipeline ======
+// =======================================================================
+//  PIPELINE
+// =======================================================================
 app.UseHttpsRedirection();
 
 app.UseRouting();
 
-// CORS ANTES de AuthN/AuthZ
+// CORS antes de Auth
 app.UseDefaultCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Endpoints
+// Controllers
 app.MapControllers();
 
-//  Endpoint mínimo para validar el pipeline
-app.MapGet("/prueba", () => Results.Ok("Hola"));
+// Endpoint básico de prueba
+app.MapGet("/prueba", () => Results.Ok("Hola RHPlus!"));
 
 app.Run();
