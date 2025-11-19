@@ -3,24 +3,24 @@
 var builder = WebApplication.CreateBuilder(args);
 
 // =======================================================================
-//  CONTROLADORES DE MÓDULOS (API Gateway unifica todos los controllers)
+//  CONTROLADORES DE MÓDULOS
 // =======================================================================
 builder.Services.AddControllers()
-    .AddApplicationPart(Assembly.Load("Modulo.Empleados.Presentation"))
     .AddApplicationPart(Assembly.Load("Modulo.Seguridad.Presentation"))
+    .AddApplicationPart(Assembly.Load("Modulo.Empleados.Presentation"))
     .AddApplicationPart(Assembly.Load("Modulo.Contratos.Presentation"))
     .AddApplicationPart(Assembly.Load("Modulo.Asistencias.Presentation"))
-    .AddApplicationPart(Assembly.Load("Modulo.Evaluaciones.Presentation"))
-    .AddApplicationPart(Assembly.Load("Modulo.Reclutamiento.Presentation"));
+    .AddApplicationPart(Assembly.Load("Modulo.Reclutamiento.Presentation"))
+    .AddApplicationPart(Assembly.Load("Modulo.Evaluaciones.Presentation"));
 
 // =======================================================================
-//  VALIDATORS - FluentValidation
+//  VALIDATORS
 // =======================================================================
 builder.Services.AddValidatorsFromAssemblyContaining<CreateEmpleadoValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateContractValidator>();
 
 // =======================================================================
-//  YARP Reverse Proxy
+//  YARP REVERSE PROXY
 // =======================================================================
 builder.Services
     .AddReverseProxy()
@@ -29,7 +29,7 @@ builder.Services
 builder.Services.AddEndpointsApiExplorer();
 
 // =======================================================================
-//  SWAGGER (incluye autenticación JWT + documentación XML por módulo)
+//  SWAGGER — CON JWT + XML PARA TODOS LOS MÓDULOS
 // =======================================================================
 builder.Services.AddSwaggerGen(c =>
 {
@@ -40,20 +40,16 @@ builder.Services.AddSwaggerGen(c =>
         Description = "Gateway de los módulos Seguridad, Empleados, Contratos, Asistencias, Evaluaciones y Reclutamiento."
     });
 
-    // ---------- JWT SECURITY ----------
+    // ------------ JWT ------------
     var securityScheme = new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Description = "Autenticación JWT. Usa: **Bearer {tu_token}**",
+        Description = "JWT Bearer. Formato: Bearer {token}",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
         Scheme = "bearer",
         BearerFormat = "JWT",
-        Reference = new OpenApiReference
-        {
-            Type = ReferenceType.SecurityScheme,
-            Id = "Bearer"
-        }
+        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
     };
 
     c.AddSecurityDefinition("Bearer", securityScheme);
@@ -62,36 +58,37 @@ builder.Services.AddSwaggerGen(c =>
         { securityScheme, Array.Empty<string>() }
     });
 
-    // ---------- XML DOCUMENTATION ----------
+    // ------------ XML COMMENTS PARA TODOS LOS MÓDULOS ------------
     var basePath = AppContext.BaseDirectory;
 
-    void AddXml(string project)
+    string[] xmlFiles =
     {
-        var xml = $"{project}.xml";
+        "Api.Gateway.xml",
+        "Modulo.Seguridad.Presentation.xml",
+        "Modulo.Empleados.Presentation.xml",
+        "Modulo.Contratos.Presentation.xml",
+        "Modulo.Asistencias.Presentation.xml",
+        "Modulo.Evaluaciones.Presentation.xml",
+        "Modulo.Reclutamiento.Presentation.xml"
+    };
+
+    foreach (var xml in xmlFiles)
+    {
         var xmlPath = Path.Combine(basePath, xml);
         if (File.Exists(xmlPath))
             c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
     }
-
-    AddXml("ApiGateway"); // tu proyecto principal
-    AddXml("Modulo.Seguridad.Presentation");
-    AddXml("Modulo.Empleados.Presentation");
-    AddXml("Modulo.Contratos.Presentation");
-    AddXml("Modulo.Asistencias.Presentation");
-    AddXml("Modulo.Evaluaciones.Presentation");
-    AddXml("Modulo.Reclutamiento.Presentation");
 });
 
-// Para acceder al HttpContext más tarde
 builder.Services.AddHttpContextAccessor();
 
 // =======================================================================
-//  CORS (usa "Cors:*" del appsettings.json)
+//  CORS
 // =======================================================================
 builder.Services.AddCorsPolicies(builder.Configuration);
 
 // =======================================================================
-//  REGISTRO DE MÓDULOS (Clean Architecture)
+//  MÓDULOS DE LA ARQUITECTURA LIMPIA
 // =======================================================================
 builder.Services.AddSeguridadModule(builder.Configuration);
 builder.Services.AddEmpleadosModule(builder.Configuration);
@@ -130,14 +127,13 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // =======================================================================
-//  SWAGGER (SIEMPRE ACTIVADO, PRODUCCIÓN INCLUIDA)
+//  SWAGGER — SIEMPRE ACTIVADO EN PRODUCCIÓN
 // =======================================================================
 app.UseSwagger();
-
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "RHPlus API Gateway v1");
-    c.RoutePrefix = "swagger"; // URL: /swagger
+    c.RoutePrefix = "swagger";
 });
 
 // =======================================================================
@@ -147,16 +143,14 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
-// CORS antes de Auth
-app.UseDefaultCors();
+app.UseDefaultCors();  // CORS antes de autenticación
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Controllers
 app.MapControllers();
 
-// Endpoint básico de prueba
+// Endpoint de prueba
 app.MapGet("/prueba", () => Results.Ok("Hola RHPlus!"));
 
 app.Run();
