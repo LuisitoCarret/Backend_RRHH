@@ -17,7 +17,46 @@ builder.Services
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "RHPlus - API Gateway",
+        Version = "v1",
+        Description = "Gateway de módulos Seguridad, Empleados, Contratos, Asistencias, Evaluaciones y Reclutamiento."
+    });
+
+    // --- Configuración de JWT en Swagger ---
+    var securityScheme = new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "JWT Bearer. Ejemplo: **Bearer {tu_token_jwt}**",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Reference = new OpenApiReference
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id = "Bearer"
+        }
+    };
+
+    c.AddSecurityDefinition("Bearer", securityScheme);
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { securityScheme, Array.Empty<string>() }
+    });
+
+    // (Opcional) XML comments si los generas en el .csproj
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+    {
+        c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+    }
+});
+
 builder.Services.AddHttpContextAccessor();
 
 // ====== C O R S  (lee Cors:* de appsettings.json) ======
@@ -66,8 +105,16 @@ var app = builder.Build();
 
 
 // ====== Swagger ======
+// ====== Swagger (habilitado en todos los entornos, incluido producción) ======
 app.UseSwagger();
-app.UseSwaggerUI();
+
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "RHPlus API Gateway v1");
+    // Ruta /swagger (https://rhplus.somee.com/swagger)
+    c.RoutePrefix = "swagger";
+});
+
 
 // ====== Pipeline ======
 app.UseHttpsRedirection();
